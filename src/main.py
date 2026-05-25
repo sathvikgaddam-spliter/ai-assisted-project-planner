@@ -3,7 +3,7 @@ from utils import save_json_output, save_markdown_output
 
 
 def main() -> int:
-    print("AI-Assisted Project Planner - Phase 1")
+    print("AI-Assisted Project Planner - Phase 2")
     description = input("Enter project description: ").strip()
 
     try:
@@ -25,6 +25,12 @@ def main() -> int:
         print("Clarification questions:")
         for index, question in enumerate(plan.clarification_questions, start=1):
             print(f"{index}. {question}")
+
+    if plan.warnings:
+        print("")
+        print("Warnings:")
+        for warning in plan.warnings:
+            print(f"- {warning}")
 
     json_path = save_json_output(plan)
     markdown_path = save_markdown_output(plan)

@@ -1,13 +1,39 @@
-from typing import Dict, List
+import json
+from typing import Dict, List, Optional
 
+from ai_provider import AIProvider, AIProviderError, GeminiProvider
 from models import Dependency, Milestone, Phase, ProjectPlan, Recommendation, Risk, Task
 from project_analyzer import analyze_project
+from prompt_manager import PromptManager
 
 
 MIN_DESCRIPTION_LENGTH = 3
 
 
-def generate_project_plan(project_description: str) -> ProjectPlan:
+def generate_project_plan(
+    project_description: str,
+    use_ai: bool = True,
+    provider: Optional[AIProvider] = None,
+    prompt_manager: Optional[PromptManager] = None,
+) -> ProjectPlan:
+    description = _validate_description(project_description)
+    analysis = analyze_project(description)
+
+    if analysis["requires_clarification"]:
+        return _build_clarification_plan(description, analysis)
+
+    if use_ai:
+        try:
+            return _generate_ai_project_plan(description, analysis, provider, prompt_manager)
+        except (AIProviderError, FileNotFoundError, ValueError):
+            fallback_plan = generate_mock_project_plan(description)
+            fallback_plan.warnings.append("AI planning failed or was unavailable; generated deterministic mock plan instead.")
+            return fallback_plan
+
+    return generate_mock_project_plan(description)
+
+
+def generate_mock_project_plan(project_description: str) -> ProjectPlan:
     description = _validate_description(project_description)
     analysis = analyze_project(description)
 
@@ -36,6 +62,36 @@ def generate_project_plan(project_description: str) -> ProjectPlan:
         assumptions=_build_assumptions(analysis),
         warnings=analysis["warnings"],
     )
+
+
+def _generate_ai_project_plan(
+    description: str,
+    analysis: Dict[str, object],
+    provider: Optional[AIProvider],
+    prompt_manager: Optional[PromptManager],
+) -> ProjectPlan:
+    active_provider = provider or GeminiProvider()
+    if not active_provider.is_configured():
+        raise AIProviderError("AI provider is not configured.")
+
+    prompts = prompt_manager or PromptManager()
+    planning_prompt = prompts.render_prompt(
+        "planning_prompt.txt",
+        {
+            "project_description": description,
+            "project_understanding": json.dumps(analysis, indent=2),
+        },
+    )
+    response = active_provider.generate_json(planning_prompt)
+    return _validate_ai_plan(response.parsed_json, description)
+
+
+def _validate_ai_plan(payload: Dict[str, object], original_description: str) -> ProjectPlan:
+    payload.setdefault("description", original_description)
+
+    if hasattr(ProjectPlan, "model_validate"):
+        return ProjectPlan.model_validate(payload)
+    return ProjectPlan.parse_obj(payload)
 
 
 def _validate_description(project_description: str) -> str:
