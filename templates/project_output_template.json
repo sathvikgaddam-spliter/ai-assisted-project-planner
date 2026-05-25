@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "ISO-8601 timestamp",
+  "project_name": "Human-readable project name",
+  "description": "Original user project description",
+  "domain": "software | analytics | business | academic | healthcare | unknown",
+  "project_type": "Inferred project type",
+  "complexity": "low | medium | high",
+  "status": "plan_generated | clarification_required",
+  "summary": "Short planning summary",
+  "phases": [
+    {
+      "id": "P1",
+      "name": "Phase name",
+      "objective": "Phase objective",
+      "estimated_duration": "Estimated duration",
+      "tasks": [
+        {
+          "id": "T1",
+          "title": "Task title",
+          "description": "Task description",
+          "owner_role": "Suggested role",
+          "estimated_effort": "Estimated effort",
+          "acceptance_criteria": ["Observable completion condition"],
+          "dependencies": ["T0"]
+        }
+      ],
+      "deliverables": ["Phase deliverable"]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "name": "Milestone name",
+      "description": "Milestone description",
+      "target_phase_id": "P1"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "D1",
+      "source_task_id": "T1",
+      "target_task_id": "T2",
+      "description": "Why this dependency exists"
+    }
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Risk description",
+      "impact": "low | medium | high",
+      "likelihood": "low | medium | high",
+      "mitigation": "Mitigation strategy"
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "REC1",
+      "category": "Planning",
+      "recommendation": "Recommended action",
+      "rationale": "Why this recommendation matters"
+    }
+  ],
+  "assumptions": ["Explicit assumption"],
+  "warnings": ["Planning warning"],
+  "clarification_questions": ["Question to answer before planning"]
+}
