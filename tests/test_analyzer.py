@@ -23,6 +23,13 @@ def test_software_product_keywords_win_over_report_wording():
     assert analysis["project_type"] == "software MVP"
 
 
+def test_specific_short_software_product_is_not_vague():
+    analysis = analyze_project("Build a personal expense tracker web app")
+
+    assert analysis["domain"] == "software"
+    assert analysis["requires_clarification"] is False
+
+
 def test_analyzer_detects_analytics_project():
     analysis = analyze_project("Build a Power BI dashboard for sales managers.")
 

@@ -246,4 +246,8 @@ def _infer_missing_information(text: str, domain: str) -> List[str]:
 def _is_vague(text: str) -> bool:
     if len(text.split()) < 4:
         return True
+    if _describes_software_product(text) and any(
+        keyword in text for keyword in ["tracker", "platform", "portal", "system", "tool", "web app"]
+    ):
+        return False
     return any(re.search(pattern, text) for pattern in VAGUE_PATTERNS) and len(text.split()) < 8

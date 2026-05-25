@@ -22,6 +22,8 @@ class AIResponseError(AIProviderError):
     """Raised when a provider returns unusable or malformed content."""
 
 
+DEFAULT_GEMINI_MODEL = "gemini-2.0-flash"
+
 SECRET_PATTERNS = [
     re.compile(r"(GEMINI_API_KEY\s*[=:]\s*)([^\s,;]+)", flags=re.IGNORECASE),
     re.compile(r"(api[_-]?key\s*[=:]\s*)([^\s,;]+)", flags=re.IGNORECASE),
@@ -61,11 +63,12 @@ class AIProvider:
 class GeminiProvider(AIProvider):
     provider_name = "gemini"
 
-    def __init__(self, api_key: Optional[str] = None, model_name: str = "gemini-1.5-flash"):
+    def __init__(self, api_key: Optional[str] = None, model_name: Optional[str] = None):
         if load_dotenv:
             load_dotenv()
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
-        self.model_name = model_name
+        self.model_name = _resolve_gemini_model(model_name)
+        print(f"Using Gemini model: {self.model_name}")
 
     def is_configured(self) -> bool:
         return bool(self.api_key)
@@ -123,6 +126,12 @@ def sanitize_ai_error(error: Exception) -> str:
         else:
             message = pattern.sub("[redacted]", message)
     return message
+
+
+def _resolve_gemini_model(model_name: Optional[str] = None) -> str:
+    configured_model = model_name or os.getenv("GEMINI_MODEL") or DEFAULT_GEMINI_MODEL
+    configured_model = configured_model.strip()
+    return configured_model or DEFAULT_GEMINI_MODEL
 
 
 def _strip_markdown_fence(text: str) -> str:

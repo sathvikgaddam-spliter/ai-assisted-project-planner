@@ -5,7 +5,14 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from ai_provider import AIConfigurationError, AIProvider, AIResponseError, GeminiProvider, parse_json_response
+from ai_provider import (
+    DEFAULT_GEMINI_MODEL,
+    AIConfigurationError,
+    AIProvider,
+    AIResponseError,
+    GeminiProvider,
+    parse_json_response,
+)
 
 
 class FakeProvider(AIProvider):
@@ -56,3 +63,42 @@ def test_gemini_provider_requires_api_key(monkeypatch):
     assert provider.is_configured() is False
     with pytest.raises(AIConfigurationError):
         provider.generate_text("prompt")
+
+
+def test_gemini_provider_defaults_to_supported_model(monkeypatch):
+    monkeypatch.setattr("ai_provider.load_dotenv", lambda: None)
+    monkeypatch.delenv("GEMINI_MODEL", raising=False)
+
+    provider = GeminiProvider(api_key="test-key")
+
+    assert provider.model_name == DEFAULT_GEMINI_MODEL
+    assert provider.model_name == "gemini-2.0-flash"
+
+
+def test_gemini_provider_uses_model_from_environment(monkeypatch):
+    monkeypatch.setattr("ai_provider.load_dotenv", lambda: None)
+    monkeypatch.setenv("GEMINI_MODEL", "gemini-2.0-flash-lite")
+
+    provider = GeminiProvider(api_key="test-key")
+
+    assert provider.model_name == "gemini-2.0-flash-lite"
+
+
+def test_gemini_provider_constructor_model_overrides_environment(monkeypatch):
+    monkeypatch.setattr("ai_provider.load_dotenv", lambda: None)
+    monkeypatch.setenv("GEMINI_MODEL", "gemini-2.0-flash-lite")
+
+    provider = GeminiProvider(api_key="test-key", model_name="gemini-2.0-flash")
+
+    assert provider.model_name == "gemini-2.0-flash"
+
+
+def test_gemini_provider_logs_model_without_api_key(monkeypatch, capsys):
+    monkeypatch.setattr("ai_provider.load_dotenv", lambda: None)
+    monkeypatch.setenv("GEMINI_MODEL", "gemini-2.0-flash")
+
+    GeminiProvider(api_key="AIzaSecretValue123456789")
+
+    output = capsys.readouterr().out
+    assert "Using Gemini model: gemini-2.0-flash" in output
+    assert "AIzaSecretValue" not in output

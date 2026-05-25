@@ -9,7 +9,7 @@ from utils import save_json_output, save_markdown_output
 
 
 def test_save_json_output(tmp_path):
-    plan = generate_project_plan("Build an expense tracker app for college students.")
+    plan = generate_project_plan("Build an expense tracker app for college students.", use_ai=False)
 
     path = save_json_output(plan, tmp_path)
     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -21,7 +21,7 @@ def test_save_json_output(tmp_path):
 
 
 def test_save_markdown_output(tmp_path):
-    plan = generate_project_plan("Create a Power BI dashboard for sales managers.")
+    plan = generate_project_plan("Create a Power BI dashboard for sales managers.", use_ai=False)
 
     path = save_markdown_output(plan, tmp_path)
     content = path.read_text(encoding="utf-8")
@@ -33,7 +33,7 @@ def test_save_markdown_output(tmp_path):
 
 
 def test_clarification_output_can_be_saved(tmp_path):
-    plan = generate_project_plan("Dashboard.")
+    plan = generate_project_plan("Dashboard.", use_ai=False)
 
     json_path = save_json_output(plan, tmp_path)
     markdown_path = save_markdown_output(plan, tmp_path)

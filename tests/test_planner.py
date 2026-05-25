@@ -9,7 +9,7 @@ from planner import generate_project_plan
 
 
 def test_generate_software_project_plan():
-    plan = generate_project_plan("Build an expense tracker app for college students to track spending and budgets.")
+    plan = generate_project_plan("Build an expense tracker app for college students to track spending and budgets.", use_ai=False)
 
     assert plan.status == "plan_generated"
     assert plan.domain == "software"
@@ -19,7 +19,7 @@ def test_generate_software_project_plan():
 
 
 def test_generate_analytics_project_plan():
-    plan = generate_project_plan("Create a Power BI dashboard for sales managers showing revenue and regional trends.")
+    plan = generate_project_plan("Create a Power BI dashboard for sales managers showing revenue and regional trends.", use_ai=False)
 
     assert plan.status == "plan_generated"
     assert plan.domain == "analytics"
@@ -28,7 +28,7 @@ def test_generate_analytics_project_plan():
 
 
 def test_vague_input_returns_clarification_plan():
-    plan = generate_project_plan("I want to build something for students.")
+    plan = generate_project_plan("I want to build something for students.", use_ai=False)
 
     assert plan.status == "clarification_required"
     assert plan.domain == "unknown"
@@ -43,7 +43,8 @@ def test_empty_input_is_rejected():
 
 def test_unrealistic_scope_adds_warning_and_scope_recommendation():
     plan = generate_project_plan(
-        "Build a full e-commerce marketplace with payments, inventory, seller dashboards, mobile apps, and analytics in one week."
+        "Build a full e-commerce marketplace with payments, inventory, seller dashboards, mobile apps, and analytics in one week.",
+        use_ai=False,
     )
 
     assert plan.status == "plan_generated"
