@@ -18,6 +18,11 @@ DOMAIN_KEYWORDS = {
         "application",
         "platform",
         "saas",
+        "tool",
+        "tracker",
+        "portal",
+        "system",
+        "web app",
         "e-commerce",
         "ecommerce",
         "mvp",
@@ -54,6 +59,18 @@ DOMAIN_KEYWORDS = {
         "medical",
     ],
 }
+
+SOFTWARE_PRODUCT_KEYWORDS = [
+    "app",
+    "application",
+    "platform",
+    "saas",
+    "tool",
+    "tracker",
+    "portal",
+    "system",
+    "web app",
+]
 
 VAGUE_PATTERNS = [
     r"\bsomething\b",
@@ -114,10 +131,24 @@ def analyze_project(project_description: str) -> Dict[str, object]:
 
 def _infer_domain(text: str) -> str:
     # Healthcare wins when compliance or clinical terms appear alongside software terms.
-    for domain in ["healthcare", "analytics", "academic", "business", "software"]:
+    if any(keyword in text for keyword in DOMAIN_KEYWORDS["healthcare"]):
+        return "healthcare"
+
+    # Product nouns like app/tracker/platform should win over analytics words
+    # such as report when the request is clearly asking to build software.
+    if _describes_software_product(text):
+        return "software"
+
+    for domain in ["analytics", "academic", "business", "software"]:
         if any(keyword in text for keyword in DOMAIN_KEYWORDS[domain]):
             return domain
     return "unknown"
+
+
+def _describes_software_product(text: str) -> bool:
+    has_product_keyword = any(keyword in text for keyword in SOFTWARE_PRODUCT_KEYWORDS)
+    has_build_intent = any(term in text for term in ["build", "create", "develop", "design", "implement"])
+    return has_product_keyword and has_build_intent
 
 
 def _infer_project_type(text: str, domain: str) -> str:

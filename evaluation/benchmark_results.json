@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-05-25T02:02:43.962554+00:00",
+  "generated_at": "2026-05-25T02:06:17.418827+00:00",
   "planner_mode": "fallback",
   "scenario_count": 9,
-  "average_score": 4.58,
+  "average_score": 4.6,
   "results": [
     {
       "scenario": {
@@ -20,8 +20,8 @@
       },
       "plan_summary": {
         "project_name": "Build a mobile-friendly expense tracker app",
-        "domain": "analytics",
-        "project_type": "analytics reporting project",
+        "domain": "software",
+        "project_type": "software MVP",
         "complexity": "medium",
         "status": "plan_generated",
         "warnings": []
@@ -30,13 +30,13 @@
         "scenario_id": "SW-001",
         "category": "software projects",
         "status": "plan_generated",
-        "domain": "analytics",
+        "domain": "software",
         "complexity": "medium",
-        "overall_score": 4.4,
+        "overall_score": 4.6,
         "scores": {
           "project_understanding": {
-            "score": 2,
-            "evidence": "Expected software, but plan classified analytics."
+            "score": 5,
+            "evidence": "Plan correctly identifies the software domain. Scenario-specific terms appear in the plan."
           },
           "completeness": {
             "score": 5,
@@ -59,8 +59,8 @@
             "evidence": "Plan includes phase-level duration estimates."
           },
           "risk_awareness": {
-            "score": 5,
-            "evidence": "3 risks are present; 2 domain risk terms found."
+            "score": 4,
+            "evidence": "2 risks are present; 1 domain risk terms found."
           },
           "recommendation_quality": {
             "score": 4,

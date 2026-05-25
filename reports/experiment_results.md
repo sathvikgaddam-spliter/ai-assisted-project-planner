@@ -7,12 +7,12 @@ Evaluate planning quality across benchmark project scenarios using the current p
 The benchmark ran 9 scenarios in fallback mode. Each generated plan was scored with a 1-5 rubric across ten dimensions.
 
 ## Aggregate Results
-- Average score: 4.58
+- Average score: 4.6
 
 ## Scenario Results
 | Scenario | Category | Status | Domain | Score | Sample Output |
 | --- | --- | --- | --- | ---: | --- |
-| SW-001 | software projects | plan_generated | analytics | 4.4 | evaluation\sample_outputs\SW-001.plan.json |
+| SW-001 | software projects | plan_generated | software | 4.6 | evaluation\sample_outputs\SW-001.plan.json |
 | AI-001 | AI/RAG projects | plan_generated | software | 4.6 | evaluation\sample_outputs\AI-001.plan.json |
 | BI-001 | BI/data projects | plan_generated | analytics | 4.7 | evaluation\sample_outputs\BI-001.plan.json |
 | BUS-001 | business workflows | plan_generated | business | 4.5 | evaluation\sample_outputs\BUS-001.plan.json |
@@ -26,7 +26,7 @@ The benchmark ran 9 scenarios in fallback mode. Each generated plan was scored w
 - Highest-scoring scenario: SCOPE-001 at 4.8.
 - Lowest-scoring scenario: VAGUE-001 at 4.3.
 - 1 scenario(s) returned clarification-required output.
-- Potential domain or project-understanding mismatches appeared in: SW-001.
+- No severe project-understanding mismatches were detected by the heuristic scorer.
 
 ## Limitations
 - Current scoring uses deterministic heuristics and should be supplemented with human review for academic claims.

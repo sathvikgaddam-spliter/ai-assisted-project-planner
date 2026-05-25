@@ -14,6 +14,15 @@ def test_analyzer_detects_software_project():
     assert analysis["complexity"] == "medium"
 
 
+def test_software_product_keywords_win_over_report_wording():
+    analysis = analyze_project(
+        "Build a mobile-friendly expense tracker app for college students to categorize spending, set monthly budgets, and export simple reports by the end of the semester."
+    )
+
+    assert analysis["domain"] == "software"
+    assert analysis["project_type"] == "software MVP"
+
+
 def test_analyzer_detects_analytics_project():
     analysis = analyze_project("Build a Power BI dashboard for sales managers.")
 

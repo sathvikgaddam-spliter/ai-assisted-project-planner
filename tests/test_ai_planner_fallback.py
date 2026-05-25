@@ -3,7 +3,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from ai_provider import AIProvider
+from ai_provider import AIProvider, AIProviderError
 from planner import generate_project_plan
 
 
@@ -27,6 +27,17 @@ class InvalidJsonProvider(AIProvider):
 
     def generate_text(self, prompt, timeout_seconds=60):
         return "not json"
+
+
+class LeakyErrorProvider(AIProvider):
+    provider_name = "fake"
+    model_name = "fake-model"
+
+    def is_configured(self):
+        return True
+
+    def generate_text(self, prompt, timeout_seconds=60):
+        raise AIProviderError("Gemini request failed: api_key=AIzaSecretValue123456789 denied")
 
 
 class ValidJsonProvider(AIProvider):
@@ -108,6 +119,7 @@ def test_missing_ai_configuration_falls_back_to_mock_plan():
     assert plan.status == "plan_generated"
     assert plan.domain == "software"
     assert any("AI planning failed" in warning for warning in plan.warnings)
+    assert any("Reason: AI provider is not configured." in warning for warning in plan.warnings)
 
 
 def test_invalid_ai_json_falls_back_to_mock_plan():
@@ -119,6 +131,19 @@ def test_invalid_ai_json_falls_back_to_mock_plan():
     assert plan.status == "plan_generated"
     assert plan.domain == "analytics"
     assert any("AI planning failed" in warning for warning in plan.warnings)
+    assert any("AI response was not valid JSON" in warning for warning in plan.warnings)
+
+
+def test_ai_failure_warning_includes_sanitized_reason():
+    plan = generate_project_plan(
+        "Build an expense tracker app for college students.",
+        provider=LeakyErrorProvider(),
+    )
+
+    warning_text = " ".join(plan.warnings)
+    assert "Gemini request failed" in warning_text
+    assert "api_key=[redacted]" in warning_text
+    assert "AIzaSecretValue" not in warning_text
 
 
 def test_valid_ai_json_is_used_when_provider_succeeds():

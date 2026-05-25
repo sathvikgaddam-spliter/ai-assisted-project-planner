@@ -1,7 +1,7 @@
 import json
 from typing import Dict, List, Optional
 
-from ai_provider import AIProvider, AIProviderError, GeminiProvider
+from ai_provider import AIProvider, AIProviderError, GeminiProvider, sanitize_ai_error
 from models import Dependency, Milestone, Phase, ProjectPlan, Recommendation, Risk, Task
 from project_analyzer import analyze_project
 from prompt_manager import PromptManager
@@ -25,9 +25,12 @@ def generate_project_plan(
     if use_ai:
         try:
             return _generate_ai_project_plan(description, analysis, provider, prompt_manager)
-        except (AIProviderError, FileNotFoundError, ValueError):
+        except (AIProviderError, FileNotFoundError, ValueError) as exc:
             fallback_plan = generate_mock_project_plan(description)
-            fallback_plan.warnings.append("AI planning failed or was unavailable; generated deterministic mock plan instead.")
+            reason = sanitize_ai_error(exc)
+            fallback_plan.warnings.append(
+                f"AI planning failed or was unavailable; generated deterministic mock plan instead. Reason: {reason}"
+            )
             return fallback_plan
 
     return generate_mock_project_plan(description)

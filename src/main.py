@@ -28,7 +28,7 @@ def main() -> int:
 
     if plan.warnings:
         print("")
-        print("Warnings:")
+        print("Warnings and debug notes:")
         for warning in plan.warnings:
             print(f"- {warning}")
 

@@ -22,6 +22,14 @@ class AIResponseError(AIProviderError):
     """Raised when a provider returns unusable or malformed content."""
 
 
+SECRET_PATTERNS = [
+    re.compile(r"(GEMINI_API_KEY\s*[=:]\s*)([^\s,;]+)", flags=re.IGNORECASE),
+    re.compile(r"(api[_-]?key\s*[=:]\s*)([^\s,;]+)", flags=re.IGNORECASE),
+    re.compile(r"(key\s*[=:]\s*)(AIza[0-9A-Za-z_-]+)", flags=re.IGNORECASE),
+    re.compile(r"AIza[0-9A-Za-z_-]{10,}"),
+]
+
+
 @dataclass
 class AIProviderResponse:
     provider: str
@@ -105,6 +113,16 @@ def parse_json_response(raw_text: str) -> Dict[str, Any]:
         raise AIResponseError("AI response JSON must be an object.")
 
     return payload
+
+
+def sanitize_ai_error(error: Exception) -> str:
+    message = str(error).strip() or error.__class__.__name__
+    for pattern in SECRET_PATTERNS:
+        if pattern.groups >= 2:
+            message = pattern.sub(r"\1[redacted]", message)
+        else:
+            message = pattern.sub("[redacted]", message)
+    return message
 
 
 def _strip_markdown_fence(text: str) -> str:
