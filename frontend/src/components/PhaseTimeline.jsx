@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 function PhaseTimeline({ phases = [], milestones = [] }) {
   if (!phases.length) {
@@ -6,9 +7,30 @@ function PhaseTimeline({ phases = [], milestones = [] }) {
   }
 
   return (
-    <div className="phase-timeline">
+    <motion.div
+      className="phase-timeline"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.12 }}
+      variants={{
+        hidden: {},
+        visible: { transition: { staggerChildren: 0.12 } },
+      }}
+    >
       {phases.map((phase, index) => (
-        <article className="phase-card glass-card lift-card" key={phase.id} style={{ animationDelay: `${index * 90}ms` }}>
+        <motion.article
+          className="phase-card surface-card lift-card"
+          key={phase.id}
+          variants={{
+            hidden: { opacity: 0, x: 28 },
+            visible: {
+              opacity: 1,
+              x: 0,
+              transition: { duration: 0.58, ease: [0.22, 1, 0.36, 1] },
+            },
+          }}
+          whileHover={{ y: -4 }}
+        >
           <div className="timeline-marker">
             <div className="phase-index">{String(index + 1).padStart(2, "0")}</div>
           </div>
@@ -51,9 +73,9 @@ function PhaseTimeline({ phases = [], milestones = [] }) {
               </div>
             ))}
           </div>
-        </article>
+        </motion.article>
       ))}
-    </div>
+    </motion.div>
   );
 }
 
