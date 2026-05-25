@@ -1,4 +1,6 @@
 import React from "react";
+import DependencyMap from "./DependencyMap.jsx";
+import ExportActions from "./ExportActions.jsx";
 import MilestoneTracker from "./MilestoneTracker.jsx";
 import PhaseTimeline from "./PhaseTimeline.jsx";
 import RiskCards from "./RiskCards.jsx";
@@ -13,12 +15,18 @@ function ResultDashboard({ plan }) {
           <span />
           <span />
         </div>
-        <p className="eyebrow">Ready</p>
-        <h2>Your generated project dashboard will appear here.</h2>
+        <p className="eyebrow">Demo workspace</p>
+        <h2>Select a sample prompt or write your own brief.</h2>
         <p>
-          Run a plan to see delivery phases, milestone gates, dependencies, risks,
-          recommendations, and debug notes in one workspace.
+          The generated dashboard will assemble timeline phases, milestone gates,
+          dependencies, risks, recommendations, export actions, and AI mode details.
         </p>
+        <div className="empty-feature-grid">
+          <span>Timeline</span>
+          <span>Exports</span>
+          <span>Risk map</span>
+          <span>Mode badge</span>
+        </div>
       </section>
     );
   }
@@ -29,6 +37,7 @@ function ResultDashboard({ plan }) {
   const recommendations = plan.recommendations || [];
   const warnings = plan.warnings || [];
   const clarificationQuestions = plan.clarification_questions || [];
+  const isFallbackMode = warnings.some((warning) => warning.toLowerCase().includes("fallback") || warning.toLowerCase().includes("ai planning failed"));
 
   return (
     <section className="result-dashboard">
@@ -38,7 +47,13 @@ function ResultDashboard({ plan }) {
           <h2>{plan.project_name}</h2>
           <p>{plan.summary}</p>
         </div>
-        <div className="status-pill">{plan.status}</div>
+        <div className="overview-actions">
+          <div className={`mode-badge ${isFallbackMode ? "fallback" : "ai"}`}>
+            {isFallbackMode ? "Fallback Mode" : "AI Mode"}
+          </div>
+          <div className="status-pill">{plan.status}</div>
+        </div>
+        <ExportActions plan={plan} />
       </section>
 
       <div className="stat-grid">
@@ -60,7 +75,7 @@ function ResultDashboard({ plan }) {
       )}
 
       <DashboardSection title="Phases timeline">
-        <PhaseTimeline phases={phases} />
+        <PhaseTimeline phases={phases} milestones={milestones} />
       </DashboardSection>
 
       <DashboardSection title="Milestone tracker">
@@ -72,16 +87,7 @@ function ResultDashboard({ plan }) {
       </DashboardSection>
 
       <DashboardSection title="Dependencies">
-        <CompactGrid
-          items={dependencies}
-          emptyText="No explicit dependencies were generated."
-          renderItem={(dependency) => (
-            <>
-              <strong>{dependency.source_task_id} to {dependency.target_task_id}</strong>
-              <span>{dependency.description}</span>
-            </>
-          )}
-        />
+        <DependencyMap dependencies={dependencies} />
       </DashboardSection>
 
       <DashboardSection title="Recommendations">

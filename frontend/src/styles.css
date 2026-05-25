@@ -209,7 +209,8 @@ p {
 
 .hero-metrics span,
 .tag-row span,
-.status-pill {
+.status-pill,
+.mode-badge {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
   padding: 7px 10px;
@@ -273,6 +274,36 @@ textarea:focus {
   font-size: 0.88rem;
 }
 
+.sample-prompts {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 6px;
+}
+
+.sample-prompts > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sample-prompt {
+  min-height: auto;
+  border-radius: 16px;
+  padding: 12px;
+  color: #dce7f7;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.sample-prompt:hover {
+  color: #07100f;
+  background: linear-gradient(135deg, #ffffff, #8dfff1);
+}
+
 .error-card {
   border: 1px solid rgba(255, 139, 122, 0.38);
   border-radius: 18px;
@@ -302,6 +333,49 @@ textarea:focus {
 
 .status-pill {
   text-transform: capitalize;
+}
+
+.overview-actions {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mode-badge {
+  border-color: rgba(141, 255, 241, 0.3);
+  color: #a9fff6;
+  background: rgba(141, 255, 241, 0.08);
+  font-weight: 850;
+}
+
+.mode-badge.fallback {
+  border-color: rgba(255, 211, 145, 0.32);
+  color: #ffe4b5;
+  background: rgba(255, 211, 145, 0.1);
+}
+
+.export-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.export-actions button {
+  min-height: 40px;
+  border-radius: 14px;
+  padding: 0 14px;
+  color: #f7fbff;
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: none;
+  font-size: 0.86rem;
+}
+
+.export-actions button:hover:not(:disabled) {
+  color: #07100f;
+  background: linear-gradient(135deg, #ffffff, #8dfff1);
 }
 
 .stat-grid {
@@ -342,15 +416,34 @@ textarea:focus {
 }
 
 .phase-timeline {
+  position: relative;
   display: grid;
   gap: 14px;
 }
 
+.phase-timeline::before {
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 42px;
+  width: 2px;
+  border-radius: 999px;
+  content: "";
+  background: linear-gradient(to bottom, rgba(141, 255, 241, 0.68), rgba(108, 132, 255, 0.12));
+}
+
 .phase-card {
+  position: relative;
   display: grid;
   grid-template-columns: 56px minmax(0, 1fr);
   gap: 16px;
   padding: 18px;
+  animation: timelineReveal 460ms ease both;
+}
+
+.timeline-marker {
+  position: relative;
+  z-index: 1;
 }
 
 .phase-index,
@@ -416,13 +509,96 @@ textarea:focus {
   margin-top: 16px;
 }
 
+.phase-milestone {
+  margin-top: 12px;
+  border: 1px solid rgba(141, 255, 241, 0.18);
+  border-radius: 16px;
+  padding: 12px;
+  background: rgba(141, 255, 241, 0.06);
+}
+
+.phase-milestone strong,
+.phase-milestone span {
+  display: block;
+}
+
+.phase-milestone span {
+  margin-top: 4px;
+  color: #b7c3d5;
+  line-height: 1.45;
+}
+
 .milestone-track,
 .compact-grid,
 .risk-grid,
-.note-list {
+.note-list,
+.dependency-map,
+.empty-feature-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 14px;
+}
+
+.dependency-card {
+  display: grid;
+  grid-template-columns: 56px minmax(72px, 1fr) 56px;
+  gap: 10px;
+  align-items: center;
+  padding: 16px;
+}
+
+.dependency-card p {
+  grid-column: 1 / -1;
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+}
+
+.dependency-node {
+  display: grid;
+  min-height: 44px;
+  place-items: center;
+  border-radius: 16px;
+  color: #07100f;
+  background: linear-gradient(135deg, #ffffff, #9cecff);
+  font-weight: 900;
+}
+
+.dependency-node.target {
+  background: linear-gradient(135deg, #ffffff, #ffd591);
+}
+
+.dependency-line {
+  position: relative;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(141, 255, 241, 0.2), rgba(141, 255, 241, 0.86));
+}
+
+.dependency-line::after {
+  position: absolute;
+  top: 50%;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid rgba(141, 255, 241, 0.9);
+  border-right: 2px solid rgba(141, 255, 241, 0.9);
+  content: "";
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.dependency-line span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 999px;
+  color: #07100f;
+  background: #8dfff1;
+  font-size: 0.72rem;
+  font-weight: 900;
+  transform: translate(-50%, -50%);
 }
 
 .milestone-card {
@@ -505,6 +681,20 @@ textarea:focus {
   width: 62%;
 }
 
+.empty-feature-grid {
+  width: min(520px, 100%);
+  margin-top: 18px;
+}
+
+.empty-feature-grid span {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 14px;
+  color: #dce7f7;
+  background: rgba(255, 255, 255, 0.06);
+  font-weight: 750;
+}
+
 .loading-orbit {
   position: relative;
   width: 92px;
@@ -536,6 +726,23 @@ textarea:focus {
   margin-top: 16px;
 }
 
+.progress-rail {
+  width: min(420px, 100%);
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.progress-rail span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #8dfff1, #9ca9ff);
+  transition: width 260ms ease;
+}
+
 .loading-steps span {
   width: 42px;
   height: 5px;
@@ -550,6 +757,20 @@ textarea:focus {
 
 .empty-copy {
   margin: 0;
+}
+
+.app-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  width: min(1560px, 100%);
+  margin: 24px auto 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 18px;
+  color: #74839a;
+  font-size: 0.9rem;
 }
 
 @keyframes fadeIn {
@@ -577,6 +798,17 @@ textarea:focus {
 @keyframes rotatePanel {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes timelineReveal {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -620,6 +852,36 @@ textarea:focus {
 
   .stat-grid {
     grid-template-columns: 1fr;
+  }
+
+  .sample-prompts > div,
+  .dependency-card,
+  .empty-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .phase-timeline::before {
+    left: 41px;
+  }
+
+  .dependency-line {
+    height: 38px;
+    width: 2px;
+    justify-self: center;
+    background: linear-gradient(to bottom, rgba(141, 255, 241, 0.2), rgba(141, 255, 241, 0.86));
+  }
+
+  .dependency-line::after {
+    top: auto;
+    right: 50%;
+    bottom: -1px;
+    transform: translateX(50%) rotate(135deg);
+  }
+
+  .app-footer,
+  .overview-actions {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   button {

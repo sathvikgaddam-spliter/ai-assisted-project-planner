@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 const loadingMessages = [
-  "Understanding project...",
-  "Analyzing requirements...",
+  "Understanding your project...",
+  "Identifying stakeholders...",
   "Mapping dependencies...",
-  "Generating execution plan...",
+  "Designing execution phases...",
+  "Finalizing recommendations...",
 ];
 
 function LoadingAnimation() {
@@ -27,6 +28,9 @@ function LoadingAnimation() {
       </div>
       <p className="eyebrow">Planner running</p>
       <h2>{loadingMessages[messageIndex]}</h2>
+      <div className="progress-rail">
+        <span style={{ width: `${((messageIndex + 1) / loadingMessages.length) * 100}%` }} />
+      </div>
       <div className="loading-steps">
         {loadingMessages.map((message, index) => (
           <span className={index <= messageIndex ? "active" : ""} key={message} />

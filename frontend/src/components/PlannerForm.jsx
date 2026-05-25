@@ -1,6 +1,6 @@
 import React from "react";
 
-function PlannerForm({ description, error, loading, onDescriptionChange, onSubmit }) {
+function PlannerForm({ description, error, loading, onDescriptionChange, onSubmit, samplePrompts = [] }) {
   return (
     <form className="planner-form glass-card" onSubmit={onSubmit}>
       <div className="form-heading">
@@ -21,6 +21,21 @@ function PlannerForm({ description, error, loading, onDescriptionChange, onSubmi
         <button type="submit" disabled={loading || description.trim().length < 3}>
           {loading ? "Generating" : "Generate Plan"}
         </button>
+      </div>
+      <div className="sample-prompts" aria-label="Sample prompts">
+        <p className="eyebrow">Sample prompts</p>
+        <div>
+          {samplePrompts.map((prompt) => (
+            <button
+              className="sample-prompt"
+              key={prompt}
+              type="button"
+              onClick={() => onDescriptionChange(prompt)}
+            >
+              {prompt}
+            </button>
+          ))}
+        </div>
       </div>
       {error && <div className="error-card">{error}</div>}
     </form>

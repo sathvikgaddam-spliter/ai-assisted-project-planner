@@ -9,6 +9,13 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000
 const initialDescription =
   "Build a hospital appointment scheduling system with doctor availability and patient reminders";
 
+const samplePrompts = [
+  "Build a hospital appointment scheduling system",
+  "Build an AI study planner for students",
+  "Build a food delivery analytics dashboard",
+  "Build a healthcare chatbot MVP",
+];
+
 function App() {
   const [description, setDescription] = useState(initialDescription);
   const [plan, setPlan] = useState(null);
@@ -49,6 +56,7 @@ function App() {
             error={error}
             loading={loading}
             onDescriptionChange={setDescription}
+            samplePrompts={samplePrompts}
             onSubmit={handleSubmit}
           />
         </div>
@@ -56,6 +64,10 @@ function App() {
           {loading ? <LoadingAnimation /> : <ResultDashboard plan={plan} />}
         </div>
       </section>
+      <footer className="app-footer">
+        <span>AI-Assisted Project Planner</span>
+        <span>Built with React, FastAPI, Gemini</span>
+      </footer>
     </main>
   );
 }
