@@ -49,6 +49,7 @@ def test_provider_generate_json_returns_normalized_response():
 
 
 def test_gemini_provider_requires_api_key(monkeypatch):
+    monkeypatch.setattr("ai_provider.load_dotenv", lambda: None)
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     provider = GeminiProvider(api_key=None)
 

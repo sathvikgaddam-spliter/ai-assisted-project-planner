@@ -1,0 +1,25 @@
+{
+  "project_name": "Clarification Required",
+  "description": "I want to build something useful for students.",
+  "domain": "unknown",
+  "project_type": "unknown project type",
+  "complexity": "low",
+  "status": "clarification_required",
+  "summary": "The project description is too vague to generate a responsible execution plan.",
+  "phases": [],
+  "milestones": [],
+  "dependencies": [],
+  "risks": [],
+  "recommendations": [],
+  "assumptions": [],
+  "warnings": [],
+  "clarification_questions": [
+    "What type of project is this: software, analytics, business, academic, healthcare, or something else?",
+    "Who are the target users or stakeholders?",
+    "What concrete deliverable should the project produce?",
+    "What timeline, resources, or constraints should the plan respect?",
+    "How will you know the project succeeded?"
+  ],
+  "generated_at": "2026-05-25T02:02:43.959480Z",
+  "schema_version": "1.0"
+}

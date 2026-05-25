@@ -1,0 +1,273 @@
+{
+  "project_name": "Build a mobile-friendly expense tracker app",
+  "description": "Build a mobile-friendly expense tracker app for college students to categorize spending, set monthly budgets, and export simple reports by the end of the semester.",
+  "domain": "analytics",
+  "project_type": "analytics reporting project",
+  "complexity": "medium",
+  "status": "plan_generated",
+  "summary": "A medium complexity analytics reporting project in the analytics domain.",
+  "phases": [
+    {
+      "id": "P1",
+      "name": "Requirements and KPI Definition",
+      "objective": "Define decision goals, users, metrics, and reporting cadence.",
+      "estimated_duration": "1 week",
+      "tasks": [
+        {
+          "id": "T1",
+          "title": "Interview stakeholders",
+          "description": "Capture audience, business questions, and reporting needs.",
+          "owner_role": "BI Analyst",
+          "estimated_effort": "2-3 days",
+          "acceptance_criteria": [
+            "Interview stakeholders is reviewed and accepted by the project lead."
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "T2",
+          "title": "Define metrics",
+          "description": "Document KPI formulas, grain, filters, and ownership.",
+          "owner_role": "BI Analyst",
+          "estimated_effort": "2-3 days",
+          "acceptance_criteria": [
+            "Define metrics is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T1"
+          ]
+        }
+      ],
+      "deliverables": [
+        "KPI definition document"
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "Data Discovery and Modeling",
+      "objective": "Profile source data and create a reliable reporting model.",
+      "estimated_duration": "1-2 weeks",
+      "tasks": [
+        {
+          "id": "T3",
+          "title": "Profile data sources",
+          "description": "Assess schemas, quality gaps, refresh needs, and access constraints.",
+          "owner_role": "Data Analyst",
+          "estimated_effort": "2-4 days",
+          "acceptance_criteria": [
+            "Profile data sources is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T2"
+          ]
+        },
+        {
+          "id": "T4",
+          "title": "Build semantic model",
+          "description": "Create tables, relationships, measures, and validation checks.",
+          "owner_role": "BI Developer",
+          "estimated_effort": "4-7 days",
+          "acceptance_criteria": [
+            "Build semantic model is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T3"
+          ]
+        }
+      ],
+      "deliverables": [
+        "data quality notes",
+        "semantic model"
+      ]
+    },
+    {
+      "id": "P3",
+      "name": "Report Build and Validation",
+      "objective": "Create dashboards and validate results with stakeholders.",
+      "estimated_duration": "1-2 weeks",
+      "tasks": [
+        {
+          "id": "T5",
+          "title": "Build report pages",
+          "description": "Create visuals, filters, drill paths, and summary views.",
+          "owner_role": "BI Developer",
+          "estimated_effort": "4-7 days",
+          "acceptance_criteria": [
+            "Build report pages is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T4"
+          ]
+        },
+        {
+          "id": "T6",
+          "title": "Validate numbers",
+          "description": "Reconcile dashboard outputs against source reports or approved samples.",
+          "owner_role": "BI Analyst",
+          "estimated_effort": "2-4 days",
+          "acceptance_criteria": [
+            "Validate numbers is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T5"
+          ]
+        }
+      ],
+      "deliverables": [
+        "validated dashboard"
+      ]
+    },
+    {
+      "id": "P4",
+      "name": "Publish and Enable",
+      "objective": "Publish the report and support adoption.",
+      "estimated_duration": "1 week",
+      "tasks": [
+        {
+          "id": "T7",
+          "title": "Publish workspace artifact",
+          "description": "Configure permissions, refresh schedule, and deployment location.",
+          "owner_role": "BI Developer",
+          "estimated_effort": "1-2 days",
+          "acceptance_criteria": [
+            "Publish workspace artifact is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T6"
+          ]
+        },
+        {
+          "id": "T8",
+          "title": "Train users",
+          "description": "Document dashboard usage and review core metrics with stakeholders.",
+          "owner_role": "BI Analyst",
+          "estimated_effort": "1-2 days",
+          "acceptance_criteria": [
+            "Train users is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T7"
+          ]
+        }
+      ],
+      "deliverables": [
+        "published report",
+        "user guide"
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "name": "Requirements and KPI Definition Complete",
+      "description": "All deliverables for Requirements and KPI Definition are complete and reviewed.",
+      "target_phase_id": "P1"
+    },
+    {
+      "id": "M2",
+      "name": "Data Discovery and Modeling Complete",
+      "description": "All deliverables for Data Discovery and Modeling are complete and reviewed.",
+      "target_phase_id": "P2"
+    },
+    {
+      "id": "M3",
+      "name": "Report Build and Validation Complete",
+      "description": "All deliverables for Report Build and Validation are complete and reviewed.",
+      "target_phase_id": "P3"
+    },
+    {
+      "id": "M4",
+      "name": "Publish and Enable Complete",
+      "description": "All deliverables for Publish and Enable are complete and reviewed.",
+      "target_phase_id": "P4"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "D1",
+      "source_task_id": "T1",
+      "target_task_id": "T2",
+      "description": "T2 depends on completion of T1."
+    },
+    {
+      "id": "D2",
+      "source_task_id": "T2",
+      "target_task_id": "T3",
+      "description": "T3 depends on completion of T2."
+    },
+    {
+      "id": "D3",
+      "source_task_id": "T3",
+      "target_task_id": "T4",
+      "description": "T4 depends on completion of T3."
+    },
+    {
+      "id": "D4",
+      "source_task_id": "T4",
+      "target_task_id": "T5",
+      "description": "T5 depends on completion of T4."
+    },
+    {
+      "id": "D5",
+      "source_task_id": "T5",
+      "target_task_id": "T6",
+      "description": "T6 depends on completion of T5."
+    },
+    {
+      "id": "D6",
+      "source_task_id": "T6",
+      "target_task_id": "T7",
+      "description": "T7 depends on completion of T6."
+    },
+    {
+      "id": "D7",
+      "source_task_id": "T7",
+      "target_task_id": "T8",
+      "description": "T8 depends on completion of T7."
+    }
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Project scope may expand beyond the initial plan.",
+      "impact": "medium",
+      "likelihood": "medium",
+      "mitigation": "Maintain an explicit MVP scope and review changes before adding work."
+    },
+    {
+      "id": "R2",
+      "description": "Missing stakeholder input may lead to rework.",
+      "impact": "medium",
+      "likelihood": "medium",
+      "mitigation": "Confirm requirements and acceptance criteria before implementation."
+    },
+    {
+      "id": "R3",
+      "description": "Data quality issues may undermine trust in outputs.",
+      "impact": "high",
+      "likelihood": "medium",
+      "mitigation": "Profile source data early and validate metrics with stakeholders."
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "REC1",
+      "category": "Planning",
+      "recommendation": "Validate assumptions before execution starts.",
+      "rationale": "The Phase 1 engine uses limited input and deterministic rules."
+    },
+    {
+      "id": "REC2",
+      "category": "Delivery",
+      "recommendation": "Use milestones as decision gates before expanding scope.",
+      "rationale": "Decision gates reduce rework and keep dependencies visible."
+    }
+  ],
+  "assumptions": [
+    "No AI provider was used; this is a deterministic Phase 1 mock plan."
+  ],
+  "warnings": [],
+  "clarification_questions": [],
+  "generated_at": "2026-05-25T02:02:43.951374Z",
+  "schema_version": "1.0"
+}
