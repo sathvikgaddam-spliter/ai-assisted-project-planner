@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from planner import generate_project_plan
-from utils import save_json_output, save_markdown_output, save_prompt_pack_zip
+from utils import build_prompt_pack_zip_filename, save_json_output, save_markdown_output, save_prompt_pack_zip
 
 
 def test_save_json_output(tmp_path):
@@ -129,6 +129,8 @@ def test_save_prompt_pack_zip_creates_expected_files_for_generated_plan(tmp_path
     zip_path = Path(save_prompt_pack_zip(plan, str(tmp_path)))
 
     assert zip_path.exists()
+    assert zip_path.name.endswith("-prompt-pack.zip")
+    assert not zip_path.name.endswith("-draft-prompt-pack.zip")
     with zipfile.ZipFile(zip_path) as archive:
         names = set(archive.namelist())
 
@@ -245,6 +247,7 @@ def test_prompt_pack_zip_includes_prompts_for_meaningful_incomplete_request(tmp_
 
     zip_path = Path(save_prompt_pack_zip(plan, str(tmp_path)))
 
+    assert zip_path.name == "racing-game-draft-prompt-pack.zip"
     with zipfile.ZipFile(zip_path) as archive:
         names = set(archive.namelist())
 
@@ -320,3 +323,30 @@ def test_prompt_pack_zip_omits_draft_notes_for_meaningless_input(tmp_path):
     assert manifest["metrics"]["engineering_prompt_count"] == 0
     assert not any(name.startswith("draft-notes/") for name in names)
     assert not any(name.startswith("engineering-prompts/") for name in names)
+
+
+def test_prompt_pack_zip_filename_sanitizes_project_title():
+    plan = generate_project_plan("Build an expense tracker app for college students.", use_ai=False)
+    plan.project_name = "Expense Tracker Dashboard!!! 2026"
+
+    filename = build_prompt_pack_zip_filename(plan)
+
+    assert filename == "expense-tracker-dashboard-2026-prompt-pack.zip"
+
+
+def test_prompt_pack_zip_filename_uses_draft_suffix():
+    plan = generate_project_plan("Build a logistics tracking system", use_ai=False)
+
+    filename = build_prompt_pack_zip_filename(plan)
+
+    assert filename.endswith("-draft-prompt-pack.zip")
+    assert filename == "logistics-tracking-system-draft-prompt-pack.zip"
+
+
+def test_prompt_pack_zip_filename_falls_back_for_missing_title():
+    plan = generate_project_plan("Build an expense tracker app for college students.", use_ai=False)
+    plan.project_name = "!!!"
+
+    filename = build_prompt_pack_zip_filename(plan)
+
+    assert filename == "project-plan.zip"

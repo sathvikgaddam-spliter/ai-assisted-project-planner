@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 
-function ExportActions({ plan }) {
+function ExportActions({ apiBaseUrl, plan, projectDescription }) {
   const [copied, setCopied] = useState(false);
+  const [zipLoading, setZipLoading] = useState(false);
+  const [zipError, setZipError] = useState("");
 
   if (!plan) {
     return null;
@@ -22,23 +24,70 @@ function ExportActions({ plan }) {
     window.setTimeout(() => setCopied(false), 1600);
   }
 
+  async function downloadPromptPackZip() {
+    setZipLoading(true);
+    setZipError("");
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/generate-plan-zip`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ project_description: projectDescription || plan.description }),
+      });
+
+      if (!response.ok) {
+        let message = "Unable to download prompt pack ZIP.";
+        try {
+          const payload = await response.json();
+          message = payload.detail || message;
+        } catch {
+          // Keep the generic download error when the response is not JSON.
+        }
+        throw new Error(message);
+      }
+
+      const blob = await response.blob();
+      downloadBlob(filenameFromResponse(response) || "project-plan.zip", blob);
+    } catch (requestError) {
+      setZipError(requestError.message || "Unable to download prompt pack ZIP.");
+    } finally {
+      setZipLoading(false);
+    }
+  }
+
   return (
-    <div className="export-actions">
-      <button type="button" onClick={downloadJson}>Download JSON</button>
-      <button type="button" onClick={downloadMarkdown}>Download Markdown</button>
-      <button type="button" onClick={copySummary}>{copied ? "Copied" : "Copy summary"}</button>
+    <div className="export-actions-wrap">
+      <div className="export-actions">
+        <button type="button" onClick={downloadJson}>Download JSON</button>
+        <button type="button" onClick={downloadMarkdown}>Download Markdown</button>
+        <button type="button" onClick={downloadPromptPackZip} disabled={zipLoading}>
+          {zipLoading ? "Preparing ZIP" : "Download Prompt Pack ZIP"}
+        </button>
+        <button type="button" onClick={copySummary}>{copied ? "Copied" : "Copy summary"}</button>
+      </div>
+      {zipError && <div className="export-error">{zipError}</div>}
     </div>
   );
 }
 
 function downloadFile(filename, content, type) {
   const blob = new Blob([content], { type });
+  downloadBlob(filename, blob);
+}
+
+function downloadBlob(filename, blob) {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
   anchor.download = filename;
   anchor.click();
   URL.revokeObjectURL(url);
+}
+
+function filenameFromResponse(response) {
+  const disposition = response.headers.get("content-disposition") || "";
+  const match = disposition.match(/filename="?([^"]+)"?/i);
+  return match ? match[1] : "";
 }
 
 function renderMarkdown(plan) {

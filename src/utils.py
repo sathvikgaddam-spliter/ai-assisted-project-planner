@@ -42,7 +42,7 @@ def save_markdown_output(plan: ProjectPlan, output_dir: Path = DEFAULT_OUTPUT_DI
 def save_prompt_pack_zip(plan: ProjectPlan, output_dir: str = "outputs") -> str:
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
-    zip_path = output_path / f"{_slugify(plan.project_name)}.prompt_pack.zip"
+    zip_path = output_path / build_prompt_pack_zip_filename(plan)
     manifest = _build_manifest(plan)
 
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
@@ -436,6 +436,23 @@ def _render_draft_warning() -> str:
     )
 
 
+def build_prompt_pack_zip_filename(plan: ProjectPlan) -> str:
+    slug = slugify_project_name(getattr(plan, "project_name", ""))
+    if not slug:
+        return "project-plan.zip"
+    suffix = "draft-prompt-pack" if is_draft_plan(plan) else "prompt-pack"
+    return f"{slug}-{suffix}.zip"
+
+
+def slugify_project_name(value: str) -> str:
+    normalized = str(value).strip().lower()
+    normalized = re.sub(r"^(build|create|develop|design|implement|plan)\s+(a|an|the)\s+", "", normalized)
+    normalized = re.sub(r"^(build|create|develop|design|implement|plan)\s+", "", normalized)
+    slug = re.sub(r"[^a-zA-Z0-9]+", "-", normalized)
+    slug = re.sub(r"-+", "-", slug).strip("-")
+    return slug
+
+
 def _slugify(value: str) -> str:
-    slug = re.sub(r"[^a-zA-Z0-9]+", "-", value.strip().lower()).strip("-")
+    slug = slugify_project_name(value)
     return slug or "project-plan"
