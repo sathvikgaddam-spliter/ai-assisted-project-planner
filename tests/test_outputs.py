@@ -132,6 +132,8 @@ def test_save_prompt_pack_zip_creates_expected_files_for_generated_plan(tmp_path
     with zipfile.ZipFile(zip_path) as archive:
         names = set(archive.namelist())
 
+        assert "project-summary.md" in names
+        assert "manifest.json" in names
         assert "project-plan/project_plan.md" in names
         assert "project-plan/project_plan.json" in names
         assert "prompt-evaluations/prompt_quality_report.md" in names
@@ -141,6 +143,42 @@ def test_save_prompt_pack_zip_creates_expected_files_for_generated_plan(tmp_path
         assert "engineering-prompts/qa_testing_engineer_prompt.md" in names
         assert "engineering-prompts/devops_engineer_prompt.md" in names
         assert "engineering-prompts/security_reviewer_prompt.md" in names
+
+
+def test_prompt_pack_zip_manifest_lists_generated_artifacts(tmp_path):
+    plan = generate_project_plan("Build an expense tracker app for college students.", use_ai=False)
+
+    zip_path = Path(save_prompt_pack_zip(plan, str(tmp_path)))
+
+    with zipfile.ZipFile(zip_path) as archive:
+        names = set(archive.namelist())
+        manifest = json.loads(archive.read("manifest.json").decode("utf-8"))
+
+    assert set(manifest["generated_artifacts"]) == names
+    assert manifest["planner_version"] == "0.1.0"
+    assert manifest["project"]["title"] == plan.project_name
+    assert manifest["project"]["status"] == "plan_generated"
+    assert manifest["project"]["is_draft"] is False
+    assert manifest["project"]["requires_clarification"] is False
+    assert manifest["metrics"]["phase_count"] == len(plan.phases)
+    assert manifest["metrics"]["engineering_prompt_count"] == len(plan.engineering_prompts)
+
+
+def test_project_summary_contains_status_and_metrics(tmp_path):
+    plan = generate_project_plan("Build an expense tracker app for college students.", use_ai=False)
+
+    zip_path = Path(save_prompt_pack_zip(plan, str(tmp_path)))
+
+    with zipfile.ZipFile(zip_path) as archive:
+        summary = archive.read("project-summary.md").decode("utf-8")
+
+    assert f"# {plan.project_name} Export Summary" in summary
+    assert f"- Planner status: {plan.status}" in summary
+    assert "- Draft status: False" in summary
+    assert f"- Number of phases: {len(plan.phases)}" in summary
+    assert f"- Number of engineering prompts: {len(plan.engineering_prompts)}" in summary
+    assert "This plan is implementation-ready based on the available requirements." in summary
+    assert "DRAFT PLAN" not in summary
 
 
 def test_prompt_pack_zip_prompt_file_contains_full_prompt(tmp_path):
@@ -211,8 +249,18 @@ def test_prompt_pack_zip_includes_draft_notes_for_meaningful_incomplete_request(
 
     with zipfile.ZipFile(zip_path) as archive:
         names = set(archive.namelist())
+        summary = archive.read("project-summary.md").decode("utf-8")
+        manifest = json.loads(archive.read("manifest.json").decode("utf-8"))
         draft_warning = archive.read("draft-notes/draft-warning.md").decode("utf-8")
 
+    assert "DRAFT PLAN — REQUIREMENTS INCOMPLETE" in summary
+    assert "- Draft status: True" in summary
+    assert "- Clarification required: True" in summary
+    assert "Clarification is required before implementation." in summary
+    assert manifest["project"]["is_draft"] is True
+    assert manifest["project"]["requires_clarification"] is True
+    assert manifest["metrics"]["phase_count"] == len(plan.phases)
+    assert manifest["metrics"]["engineering_prompt_count"] == len(plan.engineering_prompts)
     assert "draft-notes/assumptions.md" in names
     assert "draft-notes/clarification-questions.md" in names
     assert "draft-notes/draft-warning.md" in names
@@ -231,9 +279,12 @@ def test_prompt_pack_zip_omits_draft_notes_for_complete_plan(tmp_path):
 
     with zipfile.ZipFile(zip_path) as archive:
         names = set(archive.namelist())
+        summary = archive.read("project-summary.md").decode("utf-8")
 
     assert plan.status == "plan_generated"
     assert not any(name.startswith("draft-notes/") for name in names)
+    assert "DRAFT PLAN" not in summary
+    assert "- Draft status: False" in summary
 
 
 def test_prompt_pack_zip_omits_draft_notes_for_meaningless_input(tmp_path):
@@ -243,10 +294,18 @@ def test_prompt_pack_zip_omits_draft_notes_for_meaningless_input(tmp_path):
 
     with zipfile.ZipFile(zip_path) as archive:
         names = set(archive.namelist())
+        summary = archive.read("project-summary.md").decode("utf-8")
+        manifest = json.loads(archive.read("manifest.json").decode("utf-8"))
 
     assert plan.status == "clarification_required"
     assert plan.phases == []
     assert plan.engineering_prompts == []
     assert plan.prompt_evaluations == []
+    assert "- Number of phases: 0" in summary
+    assert "- Number of engineering prompts: 0" in summary
+    assert "DRAFT PLAN" not in summary
+    assert manifest["project"]["is_draft"] is False
+    assert manifest["metrics"]["phase_count"] == 0
+    assert manifest["metrics"]["engineering_prompt_count"] == 0
     assert not any(name.startswith("draft-notes/") for name in names)
     assert not any(name.startswith("engineering-prompts/") for name in names)
