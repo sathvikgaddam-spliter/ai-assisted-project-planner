@@ -104,7 +104,30 @@ def _build_manifest(plan: ProjectPlan) -> Dict[str, Any]:
         },
         "warnings": plan.warnings,
         "clarification_questions": plan.clarification_questions,
+        "prompt_quality": _build_prompt_quality_summary(plan),
         "generated_artifacts": _build_artifact_list(plan),
+    }
+
+
+def _build_prompt_quality_summary(plan: ProjectPlan) -> Dict[str, Any]:
+    evaluations = plan.prompt_evaluations
+    if not evaluations:
+        return {
+            "average_score": 0,
+            "weak_prompt_count": 0,
+            "ready_prompt_count": 0,
+            "missing_sections": [],
+            "warnings": [],
+        }
+
+    missing_sections = sorted({section for evaluation in evaluations for section in evaluation.missing_sections})
+    warnings = sorted({warning for evaluation in evaluations for warning in evaluation.warnings})
+    return {
+        "average_score": round(sum(evaluation.quality_score for evaluation in evaluations) / len(evaluations), 2),
+        "weak_prompt_count": sum(1 for evaluation in evaluations if not evaluation.ready_to_use),
+        "ready_prompt_count": sum(1 for evaluation in evaluations if evaluation.ready_to_use),
+        "missing_sections": missing_sections,
+        "warnings": warnings,
     }
 
 
@@ -177,6 +200,11 @@ def _render_project_summary(plan: ProjectPlan, manifest: Dict[str, Any]) -> str:
             f"- Number of risks: {metrics['risk_count']}",
             f"- Number of recommendations: {metrics['recommendation_count']}",
             f"- Number of clarification questions: {metrics['clarification_question_count']}",
+            "",
+            "## Prompt Quality Summary",
+            f"- Average prompt score: {manifest['prompt_quality']['average_score']}",
+            f"- Ready prompt count: {manifest['prompt_quality']['ready_prompt_count']}",
+            f"- Weak prompt count: {manifest['prompt_quality']['weak_prompt_count']}",
             "",
             "## Generated Artifacts",
             *_render_list(manifest["generated_artifacts"], "No generated artifacts recorded."),
@@ -352,7 +380,20 @@ def _render_prompt_quality_report(plan: ProjectPlan) -> str:
                 f"## {evaluation.prompt_id}",
                 "",
                 f"- Score: {evaluation.score}/100",
+                f"- Quality score: {evaluation.quality_score}/100",
                 f"- Ready to use: {evaluation.ready_to_use}",
+                "",
+                "### Passed Checks",
+                *_render_list(evaluation.passed_checks, "No quality checks passed."),
+                "",
+                "### Missing Sections",
+                *_render_list(evaluation.missing_sections, "No missing sections recorded."),
+                "",
+                "### Warnings",
+                *_render_list(evaluation.warnings, "No prompt quality warnings recorded."),
+                "",
+                "### Review Notes",
+                *_render_list(evaluation.review_notes, "No review notes recorded."),
                 "",
                 "### Strengths",
                 *_render_list(evaluation.strengths, "No strengths recorded."),

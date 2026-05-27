@@ -162,6 +162,9 @@ def test_prompt_pack_zip_manifest_lists_generated_artifacts(tmp_path):
     assert manifest["project"]["requires_clarification"] is False
     assert manifest["metrics"]["phase_count"] == len(plan.phases)
     assert manifest["metrics"]["engineering_prompt_count"] == len(plan.engineering_prompts)
+    assert manifest["prompt_quality"]["average_score"] >= 75
+    assert manifest["prompt_quality"]["weak_prompt_count"] == 0
+    assert manifest["prompt_quality"]["ready_prompt_count"] == len(plan.engineering_prompts)
 
 
 def test_project_summary_contains_status_and_metrics(tmp_path):
@@ -177,6 +180,9 @@ def test_project_summary_contains_status_and_metrics(tmp_path):
     assert "- Draft status: False" in summary
     assert f"- Number of phases: {len(plan.phases)}" in summary
     assert f"- Number of engineering prompts: {len(plan.engineering_prompts)}" in summary
+    assert "## Prompt Quality Summary" in summary
+    assert "- Average prompt score:" in summary
+    assert "- Weak prompt count: 0" in summary
     assert "This plan is implementation-ready based on the available requirements." in summary
     assert "DRAFT PLAN" not in summary
 
@@ -209,7 +215,12 @@ def test_prompt_pack_zip_quality_report_contains_evaluation_details(tmp_path):
     assert "# Prompt Quality Report" in content
     assert "## EP1" in content
     assert "- Score:" in content
+    assert "- Quality score:" in content
     assert "- Ready to use: True" in content
+    assert "### Passed Checks" in content
+    assert "### Missing Sections" in content
+    assert "### Warnings" in content
+    assert "### Review Notes" in content
     assert "### Strengths" in content
     assert "### Issues" in content
     assert "### Improvement Suggestions" in content
