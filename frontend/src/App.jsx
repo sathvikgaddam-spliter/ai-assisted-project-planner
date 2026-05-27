@@ -20,6 +20,7 @@ const samplePrompts = [
 
 function App() {
   const [description, setDescription] = useState(initialDescription);
+  const [planDescription, setPlanDescription] = useState("");
   const [plan, setPlan] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,21 +34,24 @@ function App() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    const submittedDescription = description;
     setLoading(true);
     setError("");
     setPlan(null);
+    setPlanDescription("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/generate-plan`, {
+      const response = await fetch(`${API_BASE_URL}/api/generate-plan`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ project_description: description }),
+        body: JSON.stringify({ description: submittedDescription }),
       });
       const payload = await response.json();
       if (!response.ok) {
         throw new Error(payload.detail || "Unable to generate a project plan.");
       }
-      setPlan(payload);
+      setPlan(payload.plan);
+      setPlanDescription(submittedDescription);
     } catch (requestError) {
       setError(requestError.message || "Unable to reach the planner API.");
     } finally {
@@ -176,7 +180,15 @@ function App() {
         </div>
       </AnimatedSection>
       <AnimatedSection className="results-section" id="results">
-        {loading ? <LoadingAnimation /> : <ResultDashboard plan={plan} />}
+        {loading ? (
+          <LoadingAnimation />
+        ) : (
+          <ResultDashboard
+            apiBaseUrl={API_BASE_URL}
+            plan={plan}
+            projectDescription={planDescription || description}
+          />
+        )}
       </AnimatedSection>
       <footer className="app-footer">
         <span>AI-Assisted Project Planner</span>

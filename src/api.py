@@ -2,6 +2,7 @@ from pathlib import Path
 import sys
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -11,10 +12,15 @@ if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
 from planner import generate_project_plan
+from utils import is_draft_plan, save_prompt_pack_zip
 
 
 class GeneratePlanRequest(BaseModel):
     project_description: str = Field(..., min_length=3)
+
+
+class ApiGeneratePlanRequest(BaseModel):
+    description: str = Field(..., min_length=3)
 
 
 app = FastAPI(title="AI-Assisted Project Planner API")
@@ -33,9 +39,48 @@ def health() -> dict:
     return {"status": "ok"}
 
 
+@app.get("/api/health")
+def api_health() -> dict:
+    return {"status": "ok"}
+
+
 @app.post("/generate-plan")
 def generate_plan(request: GeneratePlanRequest):
     try:
         return generate_project_plan(request.project_description)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/api/generate-plan")
+def api_generate_plan(request: ApiGeneratePlanRequest):
+    try:
+        plan = generate_project_plan(request.description)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return _build_api_plan_response(plan)
+
+
+@app.post("/generate-plan-zip")
+def generate_plan_zip(request: GeneratePlanRequest):
+    try:
+        plan = generate_project_plan(request.project_description)
+        zip_path = Path(save_prompt_pack_zip(plan))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return FileResponse(
+        path=zip_path,
+        media_type="application/zip",
+        filename=zip_path.name,
+    )
+
+
+def _build_api_plan_response(plan) -> dict:
+    return {
+        "message": "Plan generated successfully",
+        "is_draft": is_draft_plan(plan),
+        "requires_clarification": plan.status == "clarification_required",
+        "plan": plan,
+    }
