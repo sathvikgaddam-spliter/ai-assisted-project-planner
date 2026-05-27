@@ -129,8 +129,8 @@ def test_save_prompt_pack_zip_creates_expected_files_for_generated_plan(tmp_path
     zip_path = Path(save_prompt_pack_zip(plan, str(tmp_path)))
 
     assert zip_path.exists()
-    assert zip_path.name.endswith("-prompt-pack.zip")
-    assert not zip_path.name.endswith("-draft-prompt-pack.zip")
+    assert zip_path.name.endswith("-project-plan.zip")
+    assert "-draft-" not in zip_path.name
     with zipfile.ZipFile(zip_path) as archive:
         names = set(archive.namelist())
 
@@ -247,7 +247,7 @@ def test_prompt_pack_zip_includes_prompts_for_meaningful_incomplete_request(tmp_
 
     zip_path = Path(save_prompt_pack_zip(plan, str(tmp_path)))
 
-    assert zip_path.name == "racing-game-draft-prompt-pack.zip"
+    assert zip_path.name == "racing-game-project-plan.zip"
     with zipfile.ZipFile(zip_path) as archive:
         names = set(archive.namelist())
 
@@ -331,16 +331,16 @@ def test_prompt_pack_zip_filename_sanitizes_project_title():
 
     filename = build_prompt_pack_zip_filename(plan)
 
-    assert filename == "expense-tracker-dashboard-2026-prompt-pack.zip"
+    assert filename == "expense-tracker-dashboard-2026-project-plan.zip"
 
 
-def test_prompt_pack_zip_filename_uses_draft_suffix():
+def test_prompt_pack_zip_filename_omits_draft_suffix():
     plan = generate_project_plan("Build a logistics tracking system", use_ai=False)
 
     filename = build_prompt_pack_zip_filename(plan)
 
-    assert filename.endswith("-draft-prompt-pack.zip")
-    assert filename == "logistics-tracking-system-draft-prompt-pack.zip"
+    assert "-draft-" not in filename
+    assert filename == "logistics-tracking-system-project-plan.zip"
 
 
 def test_prompt_pack_zip_filename_falls_back_for_missing_title():

@@ -440,8 +440,7 @@ def build_prompt_pack_zip_filename(plan: ProjectPlan) -> str:
     slug = slugify_project_name(getattr(plan, "project_name", ""))
     if not slug:
         return "project-plan.zip"
-    suffix = "draft-prompt-pack" if is_draft_plan(plan) else "prompt-pack"
-    return f"{slug}-{suffix}.zip"
+    return f"{slug}-project-plan.zip"
 
 
 def slugify_project_name(value: str) -> str:
