@@ -1,5 +1,5 @@
 from planner import generate_project_plan
-from utils import save_json_output, save_markdown_output
+from utils import is_draft_plan, save_json_output, save_markdown_output, save_prompt_pack_zip
 
 
 def main() -> int:
@@ -20,6 +20,11 @@ def main() -> int:
     print(f"Complexity: {plan.complexity}")
     print(f"Status: {plan.status}")
 
+    if is_draft_plan(plan):
+        print("")
+        print("[DRAFT PLAN - REQUIREMENTS INCOMPLETE]")
+        print("Clarification is required before implementation. Assumptions and engineering prompts must be reviewed.")
+
     if plan.clarification_questions:
         print("")
         print("Clarification questions:")
@@ -34,10 +39,12 @@ def main() -> int:
 
     json_path = save_json_output(plan)
     markdown_path = save_markdown_output(plan)
+    prompt_pack_zip_path = save_prompt_pack_zip(plan)
 
     print("")
     print(f"JSON output: {json_path}")
     print(f"Markdown output: {markdown_path}")
+    print(f"Prompt Pack ZIP saved to: {prompt_pack_zip_path}")
     return 0
 
 

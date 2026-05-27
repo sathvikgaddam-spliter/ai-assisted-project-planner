@@ -18,6 +18,8 @@ def test_save_json_output(tmp_path):
     assert path.exists()
     assert payload["domain"] == "software"
     assert payload["status"] == "plan_generated"
+    assert payload["is_draft"] is False
+    assert payload["requires_clarification"] is False
     assert payload["phases"]
 
 
@@ -74,11 +76,51 @@ def test_clarification_output_can_be_saved(tmp_path):
     payload = json.loads(json_path.read_text(encoding="utf-8"))
 
     assert payload["status"] == "clarification_required"
+    assert payload["is_draft"] is False
+    assert payload["requires_clarification"] is True
     assert payload["clarification_questions"]
     content = markdown_path.read_text(encoding="utf-8")
     assert "Clarification Questions" in content
     assert "Engineering Prompt Pack" not in content
     assert "Prompt Quality Evaluations" not in content
+
+
+def test_json_output_marks_meaningful_incomplete_plan_as_draft(tmp_path):
+    plan = generate_project_plan("Build a racing game", use_ai=False)
+
+    path = save_json_output(plan, tmp_path)
+    payload = json.loads(path.read_text(encoding="utf-8"))
+
+    assert payload["status"] == "clarification_required"
+    assert payload["is_draft"] is True
+    assert payload["requires_clarification"] is True
+    assert payload["phases"]
+    assert payload["engineering_prompts"]
+
+
+def test_markdown_output_includes_draft_warning_for_meaningful_incomplete_plan(tmp_path):
+    plan = generate_project_plan("Build a portfolio website", use_ai=False)
+
+    path = save_markdown_output(plan, tmp_path)
+    content = path.read_text(encoding="utf-8")
+
+    assert "## Draft Plan Warning" in content
+    assert "This is a draft execution plan generated from incomplete requirements." in content
+    assert "Clarification is required before implementation." in content
+    assert "Engineering prompts are provisional." in content
+
+
+def test_complete_markdown_output_does_not_include_draft_warning(tmp_path):
+    plan = generate_project_plan(
+        "Build an expense tracker app for college students to track spending and budgets over a semester.",
+        use_ai=False,
+    )
+
+    path = save_markdown_output(plan, tmp_path)
+    content = path.read_text(encoding="utf-8")
+
+    assert plan.status == "plan_generated"
+    assert "## Draft Plan Warning" not in content
 
 
 def test_save_prompt_pack_zip_creates_expected_files_for_generated_plan(tmp_path):
@@ -160,3 +202,51 @@ def test_prompt_pack_zip_includes_prompts_for_meaningful_incomplete_request(tmp_
     assert plan.status == "clarification_required"
     assert "engineering-prompts/backend_engineer_prompt.md" in names
     assert "prompt-evaluations/prompt_quality_report.md" in names
+
+
+def test_prompt_pack_zip_includes_draft_notes_for_meaningful_incomplete_request(tmp_path):
+    plan = generate_project_plan("Build a racing game", use_ai=False)
+
+    zip_path = Path(save_prompt_pack_zip(plan, str(tmp_path)))
+
+    with zipfile.ZipFile(zip_path) as archive:
+        names = set(archive.namelist())
+        draft_warning = archive.read("draft-notes/draft-warning.md").decode("utf-8")
+
+    assert "draft-notes/assumptions.md" in names
+    assert "draft-notes/clarification-questions.md" in names
+    assert "draft-notes/draft-warning.md" in names
+    assert "not production-ready" in draft_warning
+    assert "engineering-prompts/backend_engineer_prompt.md" in names
+    assert "prompt-evaluations/prompt_quality_report.md" in names
+
+
+def test_prompt_pack_zip_omits_draft_notes_for_complete_plan(tmp_path):
+    plan = generate_project_plan(
+        "Build an expense tracker app for college students to track spending and budgets over a semester.",
+        use_ai=False,
+    )
+
+    zip_path = Path(save_prompt_pack_zip(plan, str(tmp_path)))
+
+    with zipfile.ZipFile(zip_path) as archive:
+        names = set(archive.namelist())
+
+    assert plan.status == "plan_generated"
+    assert not any(name.startswith("draft-notes/") for name in names)
+
+
+def test_prompt_pack_zip_omits_draft_notes_for_meaningless_input(tmp_path):
+    plan = generate_project_plan("build something", use_ai=False)
+
+    zip_path = Path(save_prompt_pack_zip(plan, str(tmp_path)))
+
+    with zipfile.ZipFile(zip_path) as archive:
+        names = set(archive.namelist())
+
+    assert plan.status == "clarification_required"
+    assert plan.phases == []
+    assert plan.engineering_prompts == []
+    assert plan.prompt_evaluations == []
+    assert not any(name.startswith("draft-notes/") for name in names)
+    assert not any(name.startswith("engineering-prompts/") for name in names)
