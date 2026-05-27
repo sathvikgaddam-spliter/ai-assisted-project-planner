@@ -4,10 +4,16 @@ from typing import Dict, List, Optional
 from ai_provider import AIProvider, AIProviderError, GeminiProvider, sanitize_ai_error
 from models import Dependency, Milestone, Phase, ProjectPlan, Recommendation, Risk, Task
 from project_analyzer import analyze_project
+from prompt_evaluator import evaluate_engineering_prompts
+from prompt_generator import generate_engineering_prompts
 from prompt_manager import PromptManager
 
 
 MIN_DESCRIPTION_LENGTH = 3
+DRAFT_PLAN_WARNING = (
+    "This is a draft execution plan generated from incomplete requirements. "
+    "Answer clarification questions before implementation."
+)
 
 
 def generate_project_plan(
@@ -19,19 +25,21 @@ def generate_project_plan(
     description = _validate_description(project_description)
     analysis = analyze_project(description)
 
-    if analysis["requires_clarification"]:
+    if analysis["requires_clarification"] and not analysis.get("meaningful_project_intent"):
         return _build_clarification_plan(description, analysis)
+    if analysis["requires_clarification"]:
+        return generate_mock_project_plan(description)
 
     if use_ai:
         try:
-            return _generate_ai_project_plan(description, analysis, provider, prompt_manager)
+            return _attach_prompt_pack(_generate_ai_project_plan(description, analysis, provider, prompt_manager))
         except (AIProviderError, FileNotFoundError, ValueError) as exc:
             fallback_plan = generate_mock_project_plan(description)
             reason = sanitize_ai_error(exc)
             fallback_plan.warnings.append(
                 f"AI planning failed or was unavailable; generated deterministic mock plan instead. Reason: {reason}"
             )
-            return fallback_plan
+            return _attach_prompt_pack(fallback_plan)
 
     return generate_mock_project_plan(description)
 
@@ -40,7 +48,7 @@ def generate_mock_project_plan(project_description: str) -> ProjectPlan:
     description = _validate_description(project_description)
     analysis = analyze_project(description)
 
-    if analysis["requires_clarification"]:
+    if analysis["requires_clarification"] and not analysis.get("meaningful_project_intent"):
         return _build_clarification_plan(description, analysis)
 
     phases = _build_domain_phases(analysis["domain"])
@@ -49,22 +57,29 @@ def generate_mock_project_plan(project_description: str) -> ProjectPlan:
     recommendations = _build_recommendations(analysis)
     milestones = _build_milestones(phases)
 
-    return ProjectPlan(
+    status = "clarification_required" if analysis["requires_clarification"] else "plan_generated"
+    warnings = list(analysis["warnings"])
+    clarification_questions = _build_clarification_questions(analysis) if status == "clarification_required" else []
+    if status == "clarification_required" and DRAFT_PLAN_WARNING not in warnings:
+        warnings.insert(0, DRAFT_PLAN_WARNING)
+
+    return _attach_prompt_pack(ProjectPlan(
         project_name=_derive_project_name(description, str(analysis["project_type"])),
         description=description,
         domain=analysis["domain"],
         project_type=analysis["project_type"],
         complexity=analysis["complexity"],
-        status="plan_generated",
-        summary=f"A {analysis['complexity']} complexity {analysis['project_type']} in the {analysis['domain']} domain.",
+        status=status,
+        summary=_build_summary(analysis, status),
         phases=phases,
         milestones=milestones,
         dependencies=dependencies,
         risks=risks,
         recommendations=recommendations,
         assumptions=_build_assumptions(analysis),
-        warnings=analysis["warnings"],
-    )
+        warnings=warnings,
+        clarification_questions=clarification_questions,
+    ))
 
 
 def _generate_ai_project_plan(
@@ -97,6 +112,16 @@ def _validate_ai_plan(payload: Dict[str, object], original_description: str) -> 
     return ProjectPlan.parse_obj(payload)
 
 
+def _attach_prompt_pack(plan: ProjectPlan) -> ProjectPlan:
+    if not plan.phases:
+        return plan
+
+    engineering_prompts = generate_engineering_prompts(plan)
+    plan.engineering_prompts = engineering_prompts
+    plan.prompt_evaluations = evaluate_engineering_prompts(engineering_prompts)
+    return plan
+
+
 def _validate_description(project_description: str) -> str:
     if project_description is None:
         raise ValueError("Project description is required.")
@@ -109,6 +134,21 @@ def _validate_description(project_description: str) -> str:
 
 
 def _build_clarification_plan(description: str, analysis: Dict[str, object]) -> ProjectPlan:
+    return ProjectPlan(
+        project_name="Clarification Required",
+        description=description,
+        domain=analysis["domain"],
+        project_type=analysis["project_type"],
+        complexity=analysis["complexity"],
+        status="clarification_required",
+        summary="The project description is too vague to generate a responsible execution plan.",
+        clarification_questions=_build_clarification_questions(analysis),
+        assumptions=[],
+        warnings=analysis["warnings"],
+    )
+
+
+def _build_clarification_questions(analysis: Dict[str, object]) -> List[str]:
     missing = analysis.get("missing_information", [])
     questions = [
         "What type of project is this: software, analytics, business, academic, healthcare, or something else?",
@@ -120,18 +160,14 @@ def _build_clarification_plan(description: str, analysis: Dict[str, object]) -> 
     if "success criteria" in missing:
         questions.append("How will you know the project succeeded?")
 
-    return ProjectPlan(
-        project_name="Clarification Required",
-        description=description,
-        domain=analysis["domain"],
-        project_type=analysis["project_type"],
-        complexity=analysis["complexity"],
-        status="clarification_required",
-        summary="The project description is too vague to generate a responsible execution plan.",
-        clarification_questions=questions,
-        assumptions=[],
-        warnings=analysis["warnings"],
-    )
+    return questions
+
+
+def _build_summary(analysis: Dict[str, object], status: str) -> str:
+    base = f"A {analysis['complexity']} complexity {analysis['project_type']} in the {analysis['domain']} domain."
+    if status == "clarification_required":
+        return f"Draft incomplete plan: {base} Requirements are incomplete and should be clarified before implementation."
+    return base
 
 
 def _build_domain_phases(domain: str) -> List[Phase]:
@@ -339,6 +375,8 @@ def _build_recommendations(analysis: Dict[str, object]) -> List[Recommendation]:
 
 def _build_assumptions(analysis: Dict[str, object]) -> List[str]:
     assumptions = ["No AI provider was used; this is a deterministic Phase 1 mock plan."]
+    if analysis.get("requires_clarification"):
+        assumptions.append("Requirements are incomplete; this draft plan must be validated with stakeholders before implementation.")
     missing = analysis.get("missing_information", [])
     for item in missing:
         assumptions.append(f"{item.capitalize()} was not specified and should be confirmed.")

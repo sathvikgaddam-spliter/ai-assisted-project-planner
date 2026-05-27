@@ -63,6 +63,7 @@ DOMAIN_KEYWORDS = {
 SOFTWARE_PRODUCT_KEYWORDS = [
     "app",
     "application",
+    "game",
     "platform",
     "saas",
     "tool",
@@ -70,7 +71,24 @@ SOFTWARE_PRODUCT_KEYWORDS = [
     "portal",
     "system",
     "web app",
+    "website",
+    "workflow",
 ]
+
+BUILD_INTENT_TERMS = ["build", "create", "develop", "design", "implement", "plan"]
+
+GENERIC_PROJECT_OBJECTS = {
+    "app",
+    "application",
+    "project",
+    "software",
+    "system",
+    "tool",
+    "dashboard",
+    "website",
+    "platform",
+    "something",
+}
 
 VAGUE_PATTERNS = [
     r"\bsomething\b",
@@ -117,13 +135,15 @@ def analyze_project(project_description: str) -> Dict[str, object]:
     complexity = _infer_complexity(lowered, domain)
     warnings = _infer_warnings(lowered)
     missing_information = _infer_missing_information(lowered, domain)
-    requires_clarification = domain == "unknown" or _is_vague(lowered)
+    meaningful_project_intent = _has_meaningful_project_intent(lowered)
+    requires_clarification = domain == "unknown" or _is_vague(lowered) or _is_short_incomplete_project(lowered, meaningful_project_intent, missing_information)
 
     return {
         "domain": domain,
         "project_type": project_type,
         "complexity": complexity,
         "requires_clarification": requires_clarification,
+        "meaningful_project_intent": meaningful_project_intent,
         "missing_information": missing_information,
         "warnings": warnings,
     }
@@ -142,12 +162,14 @@ def _infer_domain(text: str) -> str:
     for domain in ["analytics", "academic", "business", "software"]:
         if any(keyword in text for keyword in DOMAIN_KEYWORDS[domain]):
             return domain
+    if _has_meaningful_project_intent(text):
+        return "software"
     return "unknown"
 
 
 def _describes_software_product(text: str) -> bool:
     has_product_keyword = any(keyword in text for keyword in SOFTWARE_PRODUCT_KEYWORDS)
-    has_build_intent = any(term in text for term in ["build", "create", "develop", "design", "implement"])
+    has_build_intent = any(term in text for term in BUILD_INTENT_TERMS)
     return has_product_keyword and has_build_intent
 
 
@@ -160,6 +182,8 @@ def _infer_project_type(text: str, domain: str) -> str:
         return "analytics reporting project"
 
     if domain == "software":
+        if "game" in text:
+            return "game application"
         if "saas" in text:
             return "SaaS platform"
         if "e-commerce" in text or "ecommerce" in text or "checkout" in text:
@@ -168,6 +192,10 @@ def _infer_project_type(text: str, domain: str) -> str:
             return "marketplace MVP"
         if "tracker" in text:
             return "software MVP"
+        if "website" in text:
+            return "website project"
+        if "workflow" in text:
+            return "workflow automation project"
         return "software application"
 
     if domain == "business":
@@ -251,3 +279,22 @@ def _is_vague(text: str) -> bool:
     ):
         return False
     return any(re.search(pattern, text) for pattern in VAGUE_PATTERNS) and len(text.split()) < 8
+
+
+def _has_meaningful_project_intent(text: str) -> bool:
+    words = [word.strip(".,:;!?()[]").lower() for word in text.split()]
+    for index, word in enumerate(words):
+        if word not in BUILD_INTENT_TERMS:
+            continue
+        object_words = [item for item in words[index + 1 :] if item not in {"a", "an", "the", "new", "simple"}]
+        if len(object_words) < 2:
+            return False
+        if object_words[0] == "something":
+            return False
+        meaningful_words = [item for item in object_words if item not in GENERIC_PROJECT_OBJECTS]
+        return bool(meaningful_words)
+    return False
+
+
+def _is_short_incomplete_project(text: str, meaningful_project_intent: bool, missing_information: List[str]) -> bool:
+    return meaningful_project_intent and bool(missing_information) and len(text.split()) <= 5

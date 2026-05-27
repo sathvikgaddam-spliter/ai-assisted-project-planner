@@ -48,7 +48,16 @@ def test_analyzer_marks_vague_input_for_clarification():
     analysis = analyze_project("I want to build something for students.")
 
     assert analysis["requires_clarification"] is True
+    assert analysis["meaningful_project_intent"] is False
     assert "timeline" in analysis["missing_information"]
+
+
+def test_analyzer_detects_meaningful_short_project_intent():
+    analysis = analyze_project("Build a racing game")
+
+    assert analysis["domain"] == "software"
+    assert analysis["requires_clarification"] is True
+    assert analysis["meaningful_project_intent"] is True
 
 
 def test_analyzer_flags_unrealistic_scope():
