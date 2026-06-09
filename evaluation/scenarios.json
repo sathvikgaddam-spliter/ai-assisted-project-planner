@@ -1,0 +1,65 @@
+[
+  {
+    "id": "SW-001",
+    "category": "software projects",
+    "input": "Build a mobile-friendly expense tracker app for college students to categorize spending, set monthly budgets, and export simple reports by the end of the semester.",
+    "expected_behavior": "Generate a software MVP plan with requirements, architecture, implementation, testing, launch steps, realistic phases, and student-centered acceptance criteria.",
+    "evaluation_focus": ["domain classification", "task sequencing", "MVP scope", "timeline realism", "dependency correctness"]
+  },
+  {
+    "id": "AI-001",
+    "category": "AI/RAG projects",
+    "input": "Create a RAG assistant for a university advising office that answers policy questions from approved PDF handbooks, cites sources, and escalates uncertain answers to staff.",
+    "expected_behavior": "Identify the work as an AI-enabled software project, include document ingestion, retrieval evaluation, grounding, human escalation, privacy review, and hallucination controls.",
+    "evaluation_focus": ["AI risk awareness", "hallucination avoidance", "evaluation tasks", "data governance", "recommendation quality"]
+  },
+  {
+    "id": "BI-001",
+    "category": "BI/data projects",
+    "input": "Create a Power BI dashboard for regional sales managers showing revenue, margin, pipeline, and quota attainment with daily refresh from CRM exports.",
+    "expected_behavior": "Generate an analytics plan covering KPI definitions, data profiling, semantic modeling, dashboard validation, publishing, permissions, and user enablement.",
+    "evaluation_focus": ["analytics domain fit", "metric definition", "data quality", "validation", "publish workflow"]
+  },
+  {
+    "id": "BUS-001",
+    "category": "business workflows",
+    "input": "Plan a go-to-market campaign for a new campus meal subscription service targeting students, including channel strategy, launch assets, and weekly performance review.",
+    "expected_behavior": "Generate a business planning workflow with audience research, positioning, channel selection, content planning, launch execution, and measurable campaign review.",
+    "evaluation_focus": ["business domain fit", "stakeholder clarity", "deliverables", "measurement plan", "recommendation quality"]
+  },
+  {
+    "id": "HC-001",
+    "category": "healthcare workflows",
+    "input": "Improve a clinic appointment reminder workflow for patients by combining SMS reminders, staff follow-up, privacy review, and a four-week pilot measurement plan.",
+    "expected_behavior": "Generate a healthcare workflow plan with current-state mapping, compliance and privacy review, future-state design, staff training, pilot execution, and outcome measurement.",
+    "evaluation_focus": ["healthcare domain fit", "privacy and compliance", "workflow sequencing", "pilot realism", "risk awareness"]
+  },
+  {
+    "id": "ACAD-001",
+    "category": "academic planning",
+    "input": "Plan an independent study project for a graduate student comparing LLM-assisted project planning against manual planning using benchmark scenarios and a final research paper.",
+    "expected_behavior": "Generate an academic research plan with research question refinement, literature review, methodology, benchmark design, analysis, writing, and presentation deliverables.",
+    "evaluation_focus": ["academic domain fit", "methodology", "deliverables", "timeline realism", "evaluation design"]
+  },
+  {
+    "id": "VAGUE-001",
+    "category": "vague input",
+    "input": "I want to build something useful for students.",
+    "expected_behavior": "Avoid inventing a detailed plan and return clarification questions about domain, users, deliverable, constraints, timeline, and success criteria.",
+    "evaluation_focus": ["clarification behavior", "hallucination avoidance", "assumption handling", "output validity"]
+  },
+  {
+    "id": "SCOPE-001",
+    "category": "unrealistic scope",
+    "input": "Build an enterprise healthcare marketplace with patient scheduling, EHR integration, billing, prescriptions, video calls, analytics, mobile apps, and HIPAA compliance in one week.",
+    "expected_behavior": "Flag unrealistic scope and healthcare compliance risk, recommend scope reduction or pilot planning, and avoid pretending the full scope is feasible in one week.",
+    "evaluation_focus": ["scope risk detection", "timeline realism", "healthcare compliance", "recommendation quality", "risk awareness"]
+  },
+  {
+    "id": "CONFLICT-001",
+    "category": "conflicting requirements",
+    "input": "Create a public analytics dashboard that shows individual patient appointment histories in real time, requires no login, stores no data, and must be HIPAA-compliant.",
+    "expected_behavior": "Identify conflicting privacy, access, real-time, and no-storage requirements; ask clarifying questions or include strong warnings before implementation planning.",
+    "evaluation_focus": ["conflict detection", "privacy risk", "hallucination avoidance", "clarification behavior", "output validity"]
+  }
+]

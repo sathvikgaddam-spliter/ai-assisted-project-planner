@@ -1,0 +1,219 @@
+{
+  "project_name": "Plan an independent study project for",
+  "description": "Plan an independent study project for a graduate student comparing LLM-assisted project planning against manual planning using benchmark scenarios and a final research paper.",
+  "domain": "academic",
+  "project_type": "independent study plan",
+  "complexity": "medium",
+  "status": "plan_generated",
+  "summary": "A medium complexity independent study plan in the academic domain.",
+  "phases": [
+    {
+      "id": "P1",
+      "name": "Research Framing",
+      "objective": "Define the research question, scope, and expected deliverables.",
+      "estimated_duration": "1 week",
+      "tasks": [
+        {
+          "id": "T1",
+          "title": "Refine research question",
+          "description": "Turn the topic into a focused research question.",
+          "owner_role": "Researcher",
+          "estimated_effort": "2-3 days",
+          "acceptance_criteria": [
+            "Refine research question is reviewed and accepted by the project lead."
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "T2",
+          "title": "Define methodology",
+          "description": "Choose research method, data needs, and evaluation approach.",
+          "owner_role": "Researcher",
+          "estimated_effort": "2-4 days",
+          "acceptance_criteria": [
+            "Define methodology is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T1"
+          ]
+        }
+      ],
+      "deliverables": [
+        "research proposal"
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "Literature and Data Planning",
+      "objective": "Review prior work and prepare the evidence collection plan.",
+      "estimated_duration": "2-4 weeks",
+      "tasks": [
+        {
+          "id": "T3",
+          "title": "Conduct literature review",
+          "description": "Summarize relevant sources and identify gaps.",
+          "owner_role": "Researcher",
+          "estimated_effort": "1-3 weeks",
+          "acceptance_criteria": [
+            "Conduct literature review is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T1"
+          ]
+        },
+        {
+          "id": "T4",
+          "title": "Plan data collection",
+          "description": "Define participants, datasets, instruments, and ethics needs.",
+          "owner_role": "Researcher",
+          "estimated_effort": "1 week",
+          "acceptance_criteria": [
+            "Plan data collection is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T2"
+          ]
+        }
+      ],
+      "deliverables": [
+        "literature review notes",
+        "data collection plan"
+      ]
+    },
+    {
+      "id": "P3",
+      "name": "Analysis and Delivery",
+      "objective": "Analyze findings and produce final academic outputs.",
+      "estimated_duration": "3-6 weeks",
+      "tasks": [
+        {
+          "id": "T5",
+          "title": "Analyze evidence",
+          "description": "Apply the selected method and document results.",
+          "owner_role": "Researcher",
+          "estimated_effort": "2-4 weeks",
+          "acceptance_criteria": [
+            "Analyze evidence is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T3",
+            "T4"
+          ]
+        },
+        {
+          "id": "T6",
+          "title": "Write final deliverable",
+          "description": "Prepare paper, report, or presentation.",
+          "owner_role": "Researcher",
+          "estimated_effort": "1-2 weeks",
+          "acceptance_criteria": [
+            "Write final deliverable is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T5"
+          ]
+        }
+      ],
+      "deliverables": [
+        "final report",
+        "presentation"
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "name": "Research Framing Complete",
+      "description": "All deliverables for Research Framing are complete and reviewed.",
+      "target_phase_id": "P1"
+    },
+    {
+      "id": "M2",
+      "name": "Literature and Data Planning Complete",
+      "description": "All deliverables for Literature and Data Planning are complete and reviewed.",
+      "target_phase_id": "P2"
+    },
+    {
+      "id": "M3",
+      "name": "Analysis and Delivery Complete",
+      "description": "All deliverables for Analysis and Delivery are complete and reviewed.",
+      "target_phase_id": "P3"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "D1",
+      "source_task_id": "T1",
+      "target_task_id": "T2",
+      "description": "T2 depends on completion of T1."
+    },
+    {
+      "id": "D2",
+      "source_task_id": "T1",
+      "target_task_id": "T3",
+      "description": "T3 depends on completion of T1."
+    },
+    {
+      "id": "D3",
+      "source_task_id": "T2",
+      "target_task_id": "T4",
+      "description": "T4 depends on completion of T2."
+    },
+    {
+      "id": "D4",
+      "source_task_id": "T3",
+      "target_task_id": "T5",
+      "description": "T5 depends on completion of T3."
+    },
+    {
+      "id": "D5",
+      "source_task_id": "T4",
+      "target_task_id": "T5",
+      "description": "T5 depends on completion of T4."
+    },
+    {
+      "id": "D6",
+      "source_task_id": "T5",
+      "target_task_id": "T6",
+      "description": "T6 depends on completion of T5."
+    }
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Project scope may expand beyond the initial plan.",
+      "impact": "medium",
+      "likelihood": "medium",
+      "mitigation": "Maintain an explicit MVP scope and review changes before adding work."
+    },
+    {
+      "id": "R2",
+      "description": "Missing stakeholder input may lead to rework.",
+      "impact": "medium",
+      "likelihood": "medium",
+      "mitigation": "Confirm requirements and acceptance criteria before implementation."
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "REC1",
+      "category": "Planning",
+      "recommendation": "Validate assumptions before execution starts.",
+      "rationale": "The Phase 1 engine uses limited input and deterministic rules."
+    },
+    {
+      "id": "REC2",
+      "category": "Delivery",
+      "recommendation": "Use milestones as decision gates before expanding scope.",
+      "rationale": "Decision gates reduce rework and keep dependencies visible."
+    }
+  ],
+  "assumptions": [
+    "No AI provider was used; this is a deterministic Phase 1 mock plan.",
+    "Timeline was not specified and should be confirmed."
+  ],
+  "warnings": [],
+  "clarification_questions": [],
+  "generated_at": "2026-05-25T02:25:01.974486Z",
+  "schema_version": "1.0"
+}

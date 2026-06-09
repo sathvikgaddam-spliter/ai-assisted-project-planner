@@ -1,0 +1,212 @@
+{
+  "project_name": "Plan a go-to-market campaign for a",
+  "description": "Plan a go-to-market campaign for a new campus meal subscription service targeting students, including channel strategy, launch assets, and weekly performance review.",
+  "domain": "business",
+  "project_type": "digital marketing campaign",
+  "complexity": "medium",
+  "status": "plan_generated",
+  "summary": "A medium complexity digital marketing campaign in the business domain.",
+  "phases": [
+    {
+      "id": "P1",
+      "name": "Market and Audience Research",
+      "objective": "Clarify audience, positioning, and success metrics.",
+      "estimated_duration": "1 week",
+      "tasks": [
+        {
+          "id": "T1",
+          "title": "Define audience",
+          "description": "Document target segments, pain points, and buying triggers.",
+          "owner_role": "Marketing Lead",
+          "estimated_effort": "2-3 days",
+          "acceptance_criteria": [
+            "Define audience is reviewed and accepted by the project lead."
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "T2",
+          "title": "Set campaign goals",
+          "description": "Define measurable goals such as leads, signups, conversion, or awareness.",
+          "owner_role": "Marketing Lead",
+          "estimated_effort": "1-2 days",
+          "acceptance_criteria": [
+            "Set campaign goals is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T1"
+          ]
+        }
+      ],
+      "deliverables": [
+        "campaign brief"
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "Strategy and Content Planning",
+      "objective": "Select channels, messages, budget assumptions, and content plan.",
+      "estimated_duration": "1-2 weeks",
+      "tasks": [
+        {
+          "id": "T3",
+          "title": "Choose channels",
+          "description": "Select channels based on audience and budget.",
+          "owner_role": "Marketing Lead",
+          "estimated_effort": "2-3 days",
+          "acceptance_criteria": [
+            "Choose channels is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T2"
+          ]
+        },
+        {
+          "id": "T4",
+          "title": "Create content calendar",
+          "description": "Plan launch assets, publishing cadence, and owners.",
+          "owner_role": "Content Lead",
+          "estimated_effort": "3-5 days",
+          "acceptance_criteria": [
+            "Create content calendar is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T3"
+          ]
+        }
+      ],
+      "deliverables": [
+        "channel plan",
+        "content calendar"
+      ]
+    },
+    {
+      "id": "P3",
+      "name": "Launch Execution",
+      "objective": "Run campaign activities and monitor performance.",
+      "estimated_duration": "2-4 weeks",
+      "tasks": [
+        {
+          "id": "T5",
+          "title": "Launch campaign",
+          "description": "Publish assets and activate selected channels.",
+          "owner_role": "Marketing Lead",
+          "estimated_effort": "1-2 days",
+          "acceptance_criteria": [
+            "Launch campaign is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T4"
+          ]
+        },
+        {
+          "id": "T6",
+          "title": "Track performance",
+          "description": "Monitor results and adjust targeting or messaging.",
+          "owner_role": "Marketing Analyst",
+          "estimated_effort": "ongoing",
+          "acceptance_criteria": [
+            "Track performance is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T5"
+          ]
+        }
+      ],
+      "deliverables": [
+        "live campaign",
+        "performance dashboard"
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "name": "Market and Audience Research Complete",
+      "description": "All deliverables for Market and Audience Research are complete and reviewed.",
+      "target_phase_id": "P1"
+    },
+    {
+      "id": "M2",
+      "name": "Strategy and Content Planning Complete",
+      "description": "All deliverables for Strategy and Content Planning are complete and reviewed.",
+      "target_phase_id": "P2"
+    },
+    {
+      "id": "M3",
+      "name": "Launch Execution Complete",
+      "description": "All deliverables for Launch Execution are complete and reviewed.",
+      "target_phase_id": "P3"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "D1",
+      "source_task_id": "T1",
+      "target_task_id": "T2",
+      "description": "T2 depends on completion of T1."
+    },
+    {
+      "id": "D2",
+      "source_task_id": "T2",
+      "target_task_id": "T3",
+      "description": "T3 depends on completion of T2."
+    },
+    {
+      "id": "D3",
+      "source_task_id": "T3",
+      "target_task_id": "T4",
+      "description": "T4 depends on completion of T3."
+    },
+    {
+      "id": "D4",
+      "source_task_id": "T4",
+      "target_task_id": "T5",
+      "description": "T5 depends on completion of T4."
+    },
+    {
+      "id": "D5",
+      "source_task_id": "T5",
+      "target_task_id": "T6",
+      "description": "T6 depends on completion of T5."
+    }
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Project scope may expand beyond the initial plan.",
+      "impact": "medium",
+      "likelihood": "medium",
+      "mitigation": "Maintain an explicit MVP scope and review changes before adding work."
+    },
+    {
+      "id": "R2",
+      "description": "Missing stakeholder input may lead to rework.",
+      "impact": "medium",
+      "likelihood": "medium",
+      "mitigation": "Confirm requirements and acceptance criteria before implementation."
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "REC1",
+      "category": "Planning",
+      "recommendation": "Validate assumptions before execution starts.",
+      "rationale": "The Phase 1 engine uses limited input and deterministic rules."
+    },
+    {
+      "id": "REC2",
+      "category": "Delivery",
+      "recommendation": "Use milestones as decision gates before expanding scope.",
+      "rationale": "Decision gates reduce rework and keep dependencies visible."
+    }
+  ],
+  "assumptions": [
+    "No AI provider was used; this is a deterministic Phase 1 mock plan.",
+    "Budget or resource constraints was not specified and should be confirmed."
+  ],
+  "warnings": [],
+  "clarification_questions": [],
+  "generated_at": "2026-05-25T02:25:01.971327Z",
+  "schema_version": "1.0"
+}

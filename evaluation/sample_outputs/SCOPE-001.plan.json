@@ -1,0 +1,236 @@
+{
+  "project_name": "Build an enterprise healthcare marketplace with",
+  "description": "Build an enterprise healthcare marketplace with patient scheduling, EHR integration, billing, prescriptions, video calls, analytics, mobile apps, and HIPAA compliance in one week.",
+  "domain": "healthcare",
+  "project_type": "healthcare workflow improvement",
+  "complexity": "high",
+  "status": "plan_generated",
+  "summary": "A high complexity healthcare workflow improvement in the healthcare domain.",
+  "phases": [
+    {
+      "id": "P1",
+      "name": "Workflow Discovery",
+      "objective": "Understand current clinical or administrative workflow.",
+      "estimated_duration": "1-2 weeks",
+      "tasks": [
+        {
+          "id": "T1",
+          "title": "Map current workflow",
+          "description": "Document steps, roles, handoffs, and pain points.",
+          "owner_role": "Operations Lead",
+          "estimated_effort": "3-5 days",
+          "acceptance_criteria": [
+            "Map current workflow is reviewed and accepted by the project lead."
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "T2",
+          "title": "Identify compliance constraints",
+          "description": "Capture privacy, security, and policy requirements.",
+          "owner_role": "Compliance Lead",
+          "estimated_effort": "2-4 days",
+          "acceptance_criteria": [
+            "Identify compliance constraints is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T1"
+          ]
+        }
+      ],
+      "deliverables": [
+        "workflow map",
+        "compliance notes"
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "Solution Design",
+      "objective": "Design process and technology changes without assuming unsafe integrations.",
+      "estimated_duration": "1-2 weeks",
+      "tasks": [
+        {
+          "id": "T3",
+          "title": "Define future-state workflow",
+          "description": "Design improved scheduling, reminders, and staff responsibilities.",
+          "owner_role": "Operations Lead",
+          "estimated_effort": "3-5 days",
+          "acceptance_criteria": [
+            "Define future-state workflow is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T2"
+          ]
+        },
+        {
+          "id": "T4",
+          "title": "Plan pilot",
+          "description": "Define pilot scope, success metrics, training, and rollback plan.",
+          "owner_role": "Project Lead",
+          "estimated_effort": "2-3 days",
+          "acceptance_criteria": [
+            "Plan pilot is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T3"
+          ]
+        }
+      ],
+      "deliverables": [
+        "future workflow",
+        "pilot plan"
+      ]
+    },
+    {
+      "id": "P3",
+      "name": "Pilot and Measurement",
+      "objective": "Launch a controlled pilot and measure operational impact.",
+      "estimated_duration": "2-4 weeks",
+      "tasks": [
+        {
+          "id": "T5",
+          "title": "Train staff",
+          "description": "Prepare staff to execute the updated workflow.",
+          "owner_role": "Operations Lead",
+          "estimated_effort": "1-2 days",
+          "acceptance_criteria": [
+            "Train staff is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T4"
+          ]
+        },
+        {
+          "id": "T6",
+          "title": "Measure outcomes",
+          "description": "Track backlog, reminder success, patient experience, and staff workload.",
+          "owner_role": "Project Lead",
+          "estimated_effort": "2-4 weeks",
+          "acceptance_criteria": [
+            "Measure outcomes is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T5"
+          ]
+        }
+      ],
+      "deliverables": [
+        "pilot results",
+        "rollout recommendation"
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "name": "Workflow Discovery Complete",
+      "description": "All deliverables for Workflow Discovery are complete and reviewed.",
+      "target_phase_id": "P1"
+    },
+    {
+      "id": "M2",
+      "name": "Solution Design Complete",
+      "description": "All deliverables for Solution Design are complete and reviewed.",
+      "target_phase_id": "P2"
+    },
+    {
+      "id": "M3",
+      "name": "Pilot and Measurement Complete",
+      "description": "All deliverables for Pilot and Measurement are complete and reviewed.",
+      "target_phase_id": "P3"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "D1",
+      "source_task_id": "T1",
+      "target_task_id": "T2",
+      "description": "T2 depends on completion of T1."
+    },
+    {
+      "id": "D2",
+      "source_task_id": "T2",
+      "target_task_id": "T3",
+      "description": "T3 depends on completion of T2."
+    },
+    {
+      "id": "D3",
+      "source_task_id": "T3",
+      "target_task_id": "T4",
+      "description": "T4 depends on completion of T3."
+    },
+    {
+      "id": "D4",
+      "source_task_id": "T4",
+      "target_task_id": "T5",
+      "description": "T5 depends on completion of T4."
+    },
+    {
+      "id": "D5",
+      "source_task_id": "T5",
+      "target_task_id": "T6",
+      "description": "T6 depends on completion of T5."
+    }
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Project scope may expand beyond the initial plan.",
+      "impact": "medium",
+      "likelihood": "medium",
+      "mitigation": "Maintain an explicit MVP scope and review changes before adding work."
+    },
+    {
+      "id": "R2",
+      "description": "Missing stakeholder input may lead to rework.",
+      "impact": "medium",
+      "likelihood": "medium",
+      "mitigation": "Confirm requirements and acceptance criteria before implementation."
+    },
+    {
+      "id": "R3",
+      "description": "Privacy or compliance requirements may constrain the solution.",
+      "impact": "high",
+      "likelihood": "medium",
+      "mitigation": "Run compliance review before pilot or integration work."
+    },
+    {
+      "id": "R4",
+      "description": "The requested scope appears unrealistic for the stated timeline. Reduce scope or extend the schedule.",
+      "impact": "high",
+      "likelihood": "high",
+      "mitigation": "Reduce scope, extend timeline, or define a smaller pilot."
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "REC1",
+      "category": "Planning",
+      "recommendation": "Validate assumptions before execution starts.",
+      "rationale": "The Phase 1 engine uses limited input and deterministic rules."
+    },
+    {
+      "id": "REC2",
+      "category": "Delivery",
+      "recommendation": "Use milestones as decision gates before expanding scope.",
+      "rationale": "Decision gates reduce rework and keep dependencies visible."
+    },
+    {
+      "id": "REC3",
+      "category": "Scope",
+      "recommendation": "Create a reduced MVP plan before committing to the full scope.",
+      "rationale": "The current request includes timeline or scope risk."
+    }
+  ],
+  "assumptions": [
+    "No AI provider was used; this is a deterministic Phase 1 mock plan.",
+    "Target users was not specified and should be confirmed."
+  ],
+  "warnings": [
+    "The requested scope appears unrealistic for the stated timeline. Reduce scope or extend the schedule.",
+    "Healthcare workflows may require privacy, compliance, and security review."
+  ],
+  "clarification_questions": [],
+  "generated_at": "2026-05-25T02:25:01.975486Z",
+  "schema_version": "1.0"
+}

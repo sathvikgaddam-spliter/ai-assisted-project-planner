@@ -1,0 +1,274 @@
+{
+  "project_name": "Build a mobile-friendly expense tracker app",
+  "description": "Build a mobile-friendly expense tracker app for college students to categorize spending, set monthly budgets, and export simple reports by the end of the semester.",
+  "domain": "software",
+  "project_type": "software MVP",
+  "complexity": "medium",
+  "status": "plan_generated",
+  "summary": "A medium complexity software MVP in the software domain.",
+  "phases": [
+    {
+      "id": "P1",
+      "name": "Discovery and Requirements",
+      "objective": "Define users, scope, core workflows, and MVP boundaries.",
+      "estimated_duration": "1-2 weeks",
+      "tasks": [
+        {
+          "id": "T1",
+          "title": "Identify users and goals",
+          "description": "Document user segments, goals, and success criteria.",
+          "owner_role": "Product Lead",
+          "estimated_effort": "2-3 days",
+          "acceptance_criteria": [
+            "Identify users and goals is reviewed and accepted by the project lead."
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "T2",
+          "title": "Define MVP scope",
+          "description": "Prioritize core features and defer nonessential capabilities.",
+          "owner_role": "Product Lead",
+          "estimated_effort": "2-3 days",
+          "acceptance_criteria": [
+            "Define MVP scope is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T1"
+          ]
+        }
+      ],
+      "deliverables": [
+        "requirements brief",
+        "MVP scope"
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "Architecture and Design",
+      "objective": "Design the technical foundation and user experience.",
+      "estimated_duration": "1-2 weeks",
+      "tasks": [
+        {
+          "id": "T3",
+          "title": "Design data model",
+          "description": "Define entities, relationships, and persistence needs.",
+          "owner_role": "Backend Engineer",
+          "estimated_effort": "2-4 days",
+          "acceptance_criteria": [
+            "Design data model is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T2"
+          ]
+        },
+        {
+          "id": "T4",
+          "title": "Design user workflows",
+          "description": "Map primary screens or API flows for the MVP.",
+          "owner_role": "UX or Product Lead",
+          "estimated_effort": "2-4 days",
+          "acceptance_criteria": [
+            "Design user workflows is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T2"
+          ]
+        }
+      ],
+      "deliverables": [
+        "architecture outline",
+        "workflow design"
+      ]
+    },
+    {
+      "id": "P3",
+      "name": "Implementation",
+      "objective": "Build the MVP features in dependency order.",
+      "estimated_duration": "3-6 weeks",
+      "tasks": [
+        {
+          "id": "T5",
+          "title": "Build backend foundation",
+          "description": "Implement core services, validation, and data access.",
+          "owner_role": "Backend Engineer",
+          "estimated_effort": "1-2 weeks",
+          "acceptance_criteria": [
+            "Build backend foundation is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T3"
+          ]
+        },
+        {
+          "id": "T6",
+          "title": "Build user-facing workflow",
+          "description": "Implement the primary user workflow and connect it to backend services.",
+          "owner_role": "Full-stack Engineer",
+          "estimated_effort": "2-3 weeks",
+          "acceptance_criteria": [
+            "Build user-facing workflow is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T4",
+            "T5"
+          ]
+        }
+      ],
+      "deliverables": [
+        "working MVP"
+      ]
+    },
+    {
+      "id": "P4",
+      "name": "Testing and Launch",
+      "objective": "Validate the MVP and prepare a controlled release.",
+      "estimated_duration": "1-2 weeks",
+      "tasks": [
+        {
+          "id": "T7",
+          "title": "Run functional testing",
+          "description": "Test critical workflows, validation rules, and failure paths.",
+          "owner_role": "QA or Engineer",
+          "estimated_effort": "3-5 days",
+          "acceptance_criteria": [
+            "Run functional testing is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T6"
+          ]
+        },
+        {
+          "id": "T8",
+          "title": "Prepare launch checklist",
+          "description": "Confirm deployment, monitoring, documentation, and rollback steps.",
+          "owner_role": "Technical Lead",
+          "estimated_effort": "2-3 days",
+          "acceptance_criteria": [
+            "Prepare launch checklist is reviewed and accepted by the project lead."
+          ],
+          "dependencies": [
+            "T7"
+          ]
+        }
+      ],
+      "deliverables": [
+        "test report",
+        "launch checklist"
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "name": "Discovery and Requirements Complete",
+      "description": "All deliverables for Discovery and Requirements are complete and reviewed.",
+      "target_phase_id": "P1"
+    },
+    {
+      "id": "M2",
+      "name": "Architecture and Design Complete",
+      "description": "All deliverables for Architecture and Design are complete and reviewed.",
+      "target_phase_id": "P2"
+    },
+    {
+      "id": "M3",
+      "name": "Implementation Complete",
+      "description": "All deliverables for Implementation are complete and reviewed.",
+      "target_phase_id": "P3"
+    },
+    {
+      "id": "M4",
+      "name": "Testing and Launch Complete",
+      "description": "All deliverables for Testing and Launch are complete and reviewed.",
+      "target_phase_id": "P4"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "D1",
+      "source_task_id": "T1",
+      "target_task_id": "T2",
+      "description": "T2 depends on completion of T1."
+    },
+    {
+      "id": "D2",
+      "source_task_id": "T2",
+      "target_task_id": "T3",
+      "description": "T3 depends on completion of T2."
+    },
+    {
+      "id": "D3",
+      "source_task_id": "T2",
+      "target_task_id": "T4",
+      "description": "T4 depends on completion of T2."
+    },
+    {
+      "id": "D4",
+      "source_task_id": "T3",
+      "target_task_id": "T5",
+      "description": "T5 depends on completion of T3."
+    },
+    {
+      "id": "D5",
+      "source_task_id": "T4",
+      "target_task_id": "T6",
+      "description": "T6 depends on completion of T4."
+    },
+    {
+      "id": "D6",
+      "source_task_id": "T5",
+      "target_task_id": "T6",
+      "description": "T6 depends on completion of T5."
+    },
+    {
+      "id": "D7",
+      "source_task_id": "T6",
+      "target_task_id": "T7",
+      "description": "T7 depends on completion of T6."
+    },
+    {
+      "id": "D8",
+      "source_task_id": "T7",
+      "target_task_id": "T8",
+      "description": "T8 depends on completion of T7."
+    }
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Project scope may expand beyond the initial plan.",
+      "impact": "medium",
+      "likelihood": "medium",
+      "mitigation": "Maintain an explicit MVP scope and review changes before adding work."
+    },
+    {
+      "id": "R2",
+      "description": "Missing stakeholder input may lead to rework.",
+      "impact": "medium",
+      "likelihood": "medium",
+      "mitigation": "Confirm requirements and acceptance criteria before implementation."
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "REC1",
+      "category": "Planning",
+      "recommendation": "Validate assumptions before execution starts.",
+      "rationale": "The Phase 1 engine uses limited input and deterministic rules."
+    },
+    {
+      "id": "REC2",
+      "category": "Delivery",
+      "recommendation": "Use milestones as decision gates before expanding scope.",
+      "rationale": "Decision gates reduce rework and keep dependencies visible."
+    }
+  ],
+  "assumptions": [
+    "No AI provider was used; this is a deterministic Phase 1 mock plan."
+  ],
+  "warnings": [],
+  "clarification_questions": [],
+  "generated_at": "2026-05-25T02:25:01.967326Z",
+  "schema_version": "1.0"
+}

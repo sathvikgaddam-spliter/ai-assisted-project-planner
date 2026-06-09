@@ -1,0 +1,680 @@
+{
+  "generated_at": "2026-05-25T02:25:01.979007+00:00",
+  "planner_mode": "fallback",
+  "scenario_count": 9,
+  "average_score": 4.6,
+  "results": [
+    {
+      "scenario": {
+        "id": "SW-001",
+        "category": "software projects",
+        "input": "Build a mobile-friendly expense tracker app for college students to categorize spending, set monthly budgets, and export simple reports by the end of the semester.",
+        "expected_behavior": "Generate a software MVP plan with requirements, architecture, implementation, testing, launch steps, realistic phases, and student-centered acceptance criteria.",
+        "evaluation_focus": [
+          "domain classification",
+          "task sequencing",
+          "MVP scope",
+          "timeline realism",
+          "dependency correctness"
+        ]
+      },
+      "plan_summary": {
+        "project_name": "Build a mobile-friendly expense tracker app",
+        "domain": "software",
+        "project_type": "software MVP",
+        "complexity": "medium",
+        "status": "plan_generated",
+        "warnings": []
+      },
+      "evaluation": {
+        "scenario_id": "SW-001",
+        "category": "software projects",
+        "status": "plan_generated",
+        "domain": "software",
+        "complexity": "medium",
+        "overall_score": 4.6,
+        "scores": {
+          "project_understanding": {
+            "score": 5,
+            "evidence": "Plan correctly identifies the software domain. Scenario-specific terms appear in the plan."
+          },
+          "completeness": {
+            "score": 5,
+            "evidence": "7 major plan sections contain content."
+          },
+          "task_quality": {
+            "score": 5,
+            "evidence": "8 of 8 tasks include core execution details."
+          },
+          "milestone_usefulness": {
+            "score": 5,
+            "evidence": "4 milestones map to valid phases."
+          },
+          "dependency_correctness": {
+            "score": 5,
+            "evidence": "Task dependencies are represented in the explicit dependency list."
+          },
+          "timeline_realism": {
+            "score": 4,
+            "evidence": "Plan includes phase-level duration estimates."
+          },
+          "risk_awareness": {
+            "score": 4,
+            "evidence": "2 risks are present; 1 domain risk terms found."
+          },
+          "recommendation_quality": {
+            "score": 4,
+            "evidence": "2 recommendations include rationale."
+          },
+          "hallucination_avoidance": {
+            "score": 4,
+            "evidence": "Plan includes assumptions or keeps claims generic."
+          },
+          "output_validity": {
+            "score": 5,
+            "evidence": "Generated plan is schema-valid and internally consistent."
+          }
+        }
+      },
+      "sample_output": "evaluation\\sample_outputs\\SW-001.plan.json"
+    },
+    {
+      "scenario": {
+        "id": "AI-001",
+        "category": "AI/RAG projects",
+        "input": "Create a RAG assistant for a university advising office that answers policy questions from approved PDF handbooks, cites sources, and escalates uncertain answers to staff.",
+        "expected_behavior": "Identify the work as an AI-enabled software project, include document ingestion, retrieval evaluation, grounding, human escalation, privacy review, and hallucination controls.",
+        "evaluation_focus": [
+          "AI risk awareness",
+          "hallucination avoidance",
+          "evaluation tasks",
+          "data governance",
+          "recommendation quality"
+        ]
+      },
+      "plan_summary": {
+        "project_name": "Create a RAG assistant for a",
+        "domain": "software",
+        "project_type": "software application",
+        "complexity": "medium",
+        "status": "plan_generated",
+        "warnings": []
+      },
+      "evaluation": {
+        "scenario_id": "AI-001",
+        "category": "AI/RAG projects",
+        "status": "plan_generated",
+        "domain": "software",
+        "complexity": "medium",
+        "overall_score": 4.6,
+        "scores": {
+          "project_understanding": {
+            "score": 5,
+            "evidence": "Plan correctly identifies the software domain. Scenario-specific terms appear in the plan."
+          },
+          "completeness": {
+            "score": 5,
+            "evidence": "7 major plan sections contain content."
+          },
+          "task_quality": {
+            "score": 5,
+            "evidence": "8 of 8 tasks include core execution details."
+          },
+          "milestone_usefulness": {
+            "score": 5,
+            "evidence": "4 milestones map to valid phases."
+          },
+          "dependency_correctness": {
+            "score": 5,
+            "evidence": "Task dependencies are represented in the explicit dependency list."
+          },
+          "timeline_realism": {
+            "score": 4,
+            "evidence": "Plan includes phase-level duration estimates."
+          },
+          "risk_awareness": {
+            "score": 4,
+            "evidence": "2 risks are present; 1 domain risk terms found."
+          },
+          "recommendation_quality": {
+            "score": 4,
+            "evidence": "2 recommendations include rationale."
+          },
+          "hallucination_avoidance": {
+            "score": 4,
+            "evidence": "Plan includes assumptions or keeps claims generic."
+          },
+          "output_validity": {
+            "score": 5,
+            "evidence": "Generated plan is schema-valid and internally consistent."
+          }
+        }
+      },
+      "sample_output": "evaluation\\sample_outputs\\AI-001.plan.json"
+    },
+    {
+      "scenario": {
+        "id": "BI-001",
+        "category": "BI/data projects",
+        "input": "Create a Power BI dashboard for regional sales managers showing revenue, margin, pipeline, and quota attainment with daily refresh from CRM exports.",
+        "expected_behavior": "Generate an analytics plan covering KPI definitions, data profiling, semantic modeling, dashboard validation, publishing, permissions, and user enablement.",
+        "evaluation_focus": [
+          "analytics domain fit",
+          "metric definition",
+          "data quality",
+          "validation",
+          "publish workflow"
+        ]
+      },
+      "plan_summary": {
+        "project_name": "Create a Power BI dashboard for",
+        "domain": "analytics",
+        "project_type": "Power BI dashboard",
+        "complexity": "medium",
+        "status": "plan_generated",
+        "warnings": []
+      },
+      "evaluation": {
+        "scenario_id": "BI-001",
+        "category": "BI/data projects",
+        "status": "plan_generated",
+        "domain": "analytics",
+        "complexity": "medium",
+        "overall_score": 4.7,
+        "scores": {
+          "project_understanding": {
+            "score": 5,
+            "evidence": "Plan correctly identifies the analytics domain. Scenario-specific terms appear in the plan."
+          },
+          "completeness": {
+            "score": 5,
+            "evidence": "7 major plan sections contain content."
+          },
+          "task_quality": {
+            "score": 5,
+            "evidence": "8 of 8 tasks include core execution details."
+          },
+          "milestone_usefulness": {
+            "score": 5,
+            "evidence": "4 milestones map to valid phases."
+          },
+          "dependency_correctness": {
+            "score": 5,
+            "evidence": "Task dependencies are represented in the explicit dependency list."
+          },
+          "timeline_realism": {
+            "score": 4,
+            "evidence": "Plan includes phase-level duration estimates."
+          },
+          "risk_awareness": {
+            "score": 5,
+            "evidence": "3 risks are present; 2 domain risk terms found."
+          },
+          "recommendation_quality": {
+            "score": 4,
+            "evidence": "2 recommendations include rationale."
+          },
+          "hallucination_avoidance": {
+            "score": 4,
+            "evidence": "Plan includes assumptions or keeps claims generic."
+          },
+          "output_validity": {
+            "score": 5,
+            "evidence": "Generated plan is schema-valid and internally consistent."
+          }
+        }
+      },
+      "sample_output": "evaluation\\sample_outputs\\BI-001.plan.json"
+    },
+    {
+      "scenario": {
+        "id": "BUS-001",
+        "category": "business workflows",
+        "input": "Plan a go-to-market campaign for a new campus meal subscription service targeting students, including channel strategy, launch assets, and weekly performance review.",
+        "expected_behavior": "Generate a business planning workflow with audience research, positioning, channel selection, content planning, launch execution, and measurable campaign review.",
+        "evaluation_focus": [
+          "business domain fit",
+          "stakeholder clarity",
+          "deliverables",
+          "measurement plan",
+          "recommendation quality"
+        ]
+      },
+      "plan_summary": {
+        "project_name": "Plan a go-to-market campaign for a",
+        "domain": "business",
+        "project_type": "digital marketing campaign",
+        "complexity": "medium",
+        "status": "plan_generated",
+        "warnings": []
+      },
+      "evaluation": {
+        "scenario_id": "BUS-001",
+        "category": "business workflows",
+        "status": "plan_generated",
+        "domain": "business",
+        "complexity": "medium",
+        "overall_score": 4.5,
+        "scores": {
+          "project_understanding": {
+            "score": 5,
+            "evidence": "Plan correctly identifies the business domain. Scenario-specific terms appear in the plan."
+          },
+          "completeness": {
+            "score": 4,
+            "evidence": "7 major plan sections contain content."
+          },
+          "task_quality": {
+            "score": 5,
+            "evidence": "6 of 6 tasks include core execution details."
+          },
+          "milestone_usefulness": {
+            "score": 5,
+            "evidence": "3 milestones map to valid phases."
+          },
+          "dependency_correctness": {
+            "score": 5,
+            "evidence": "Task dependencies are represented in the explicit dependency list."
+          },
+          "timeline_realism": {
+            "score": 4,
+            "evidence": "Plan includes phase-level duration estimates."
+          },
+          "risk_awareness": {
+            "score": 4,
+            "evidence": "2 risks are present; 1 domain risk terms found."
+          },
+          "recommendation_quality": {
+            "score": 4,
+            "evidence": "2 recommendations include rationale."
+          },
+          "hallucination_avoidance": {
+            "score": 4,
+            "evidence": "Plan includes assumptions or keeps claims generic."
+          },
+          "output_validity": {
+            "score": 5,
+            "evidence": "Generated plan is schema-valid and internally consistent."
+          }
+        }
+      },
+      "sample_output": "evaluation\\sample_outputs\\BUS-001.plan.json"
+    },
+    {
+      "scenario": {
+        "id": "HC-001",
+        "category": "healthcare workflows",
+        "input": "Improve a clinic appointment reminder workflow for patients by combining SMS reminders, staff follow-up, privacy review, and a four-week pilot measurement plan.",
+        "expected_behavior": "Generate a healthcare workflow plan with current-state mapping, compliance and privacy review, future-state design, staff training, pilot execution, and outcome measurement.",
+        "evaluation_focus": [
+          "healthcare domain fit",
+          "privacy and compliance",
+          "workflow sequencing",
+          "pilot realism",
+          "risk awareness"
+        ]
+      },
+      "plan_summary": {
+        "project_name": "Improve a clinic appointment reminder workflow",
+        "domain": "healthcare",
+        "project_type": "healthcare workflow improvement",
+        "complexity": "medium",
+        "status": "plan_generated",
+        "warnings": [
+          "Healthcare workflows may require privacy, compliance, and security review."
+        ]
+      },
+      "evaluation": {
+        "scenario_id": "HC-001",
+        "category": "healthcare workflows",
+        "status": "plan_generated",
+        "domain": "healthcare",
+        "complexity": "medium",
+        "overall_score": 4.7,
+        "scores": {
+          "project_understanding": {
+            "score": 5,
+            "evidence": "Plan correctly identifies the healthcare domain. Scenario-specific terms appear in the plan."
+          },
+          "completeness": {
+            "score": 4,
+            "evidence": "7 major plan sections contain content."
+          },
+          "task_quality": {
+            "score": 5,
+            "evidence": "6 of 6 tasks include core execution details."
+          },
+          "milestone_usefulness": {
+            "score": 5,
+            "evidence": "3 milestones map to valid phases."
+          },
+          "dependency_correctness": {
+            "score": 5,
+            "evidence": "Task dependencies are represented in the explicit dependency list."
+          },
+          "timeline_realism": {
+            "score": 4,
+            "evidence": "Plan includes phase-level duration estimates."
+          },
+          "risk_awareness": {
+            "score": 5,
+            "evidence": "4 risks are present; 3 domain risk terms found."
+          },
+          "recommendation_quality": {
+            "score": 5,
+            "evidence": "3 recommendations include rationale."
+          },
+          "hallucination_avoidance": {
+            "score": 4,
+            "evidence": "Plan includes assumptions or keeps claims generic."
+          },
+          "output_validity": {
+            "score": 5,
+            "evidence": "Generated plan is schema-valid and internally consistent."
+          }
+        }
+      },
+      "sample_output": "evaluation\\sample_outputs\\HC-001.plan.json"
+    },
+    {
+      "scenario": {
+        "id": "ACAD-001",
+        "category": "academic planning",
+        "input": "Plan an independent study project for a graduate student comparing LLM-assisted project planning against manual planning using benchmark scenarios and a final research paper.",
+        "expected_behavior": "Generate an academic research plan with research question refinement, literature review, methodology, benchmark design, analysis, writing, and presentation deliverables.",
+        "evaluation_focus": [
+          "academic domain fit",
+          "methodology",
+          "deliverables",
+          "timeline realism",
+          "evaluation design"
+        ]
+      },
+      "plan_summary": {
+        "project_name": "Plan an independent study project for",
+        "domain": "academic",
+        "project_type": "independent study plan",
+        "complexity": "medium",
+        "status": "plan_generated",
+        "warnings": []
+      },
+      "evaluation": {
+        "scenario_id": "ACAD-001",
+        "category": "academic planning",
+        "status": "plan_generated",
+        "domain": "academic",
+        "complexity": "medium",
+        "overall_score": 4.5,
+        "scores": {
+          "project_understanding": {
+            "score": 5,
+            "evidence": "Plan correctly identifies the academic domain. Scenario-specific terms appear in the plan."
+          },
+          "completeness": {
+            "score": 4,
+            "evidence": "7 major plan sections contain content."
+          },
+          "task_quality": {
+            "score": 5,
+            "evidence": "6 of 6 tasks include core execution details."
+          },
+          "milestone_usefulness": {
+            "score": 5,
+            "evidence": "3 milestones map to valid phases."
+          },
+          "dependency_correctness": {
+            "score": 5,
+            "evidence": "Task dependencies are represented in the explicit dependency list."
+          },
+          "timeline_realism": {
+            "score": 4,
+            "evidence": "Plan includes phase-level duration estimates."
+          },
+          "risk_awareness": {
+            "score": 4,
+            "evidence": "2 risks are present; 1 domain risk terms found."
+          },
+          "recommendation_quality": {
+            "score": 4,
+            "evidence": "2 recommendations include rationale."
+          },
+          "hallucination_avoidance": {
+            "score": 4,
+            "evidence": "Plan includes assumptions or keeps claims generic."
+          },
+          "output_validity": {
+            "score": 5,
+            "evidence": "Generated plan is schema-valid and internally consistent."
+          }
+        }
+      },
+      "sample_output": "evaluation\\sample_outputs\\ACAD-001.plan.json"
+    },
+    {
+      "scenario": {
+        "id": "VAGUE-001",
+        "category": "vague input",
+        "input": "I want to build something useful for students.",
+        "expected_behavior": "Avoid inventing a detailed plan and return clarification questions about domain, users, deliverable, constraints, timeline, and success criteria.",
+        "evaluation_focus": [
+          "clarification behavior",
+          "hallucination avoidance",
+          "assumption handling",
+          "output validity"
+        ]
+      },
+      "plan_summary": {
+        "project_name": "Clarification Required",
+        "domain": "unknown",
+        "project_type": "unknown project type",
+        "complexity": "low",
+        "status": "clarification_required",
+        "warnings": []
+      },
+      "evaluation": {
+        "scenario_id": "VAGUE-001",
+        "category": "vague input",
+        "status": "clarification_required",
+        "domain": "unknown",
+        "complexity": "low",
+        "overall_score": 4.3,
+        "scores": {
+          "project_understanding": {
+            "score": 5,
+            "evidence": "Plan asks for clarification instead of over-specifying unclear input. Scenario-specific terms appear in the plan."
+          },
+          "completeness": {
+            "score": 4,
+            "evidence": "Clarification plan includes questions instead of execution sections."
+          },
+          "task_quality": {
+            "score": 4,
+            "evidence": "No execution tasks are expected only for clarification plans."
+          },
+          "milestone_usefulness": {
+            "score": 4,
+            "evidence": "Milestones are deferred because clarification is required."
+          },
+          "dependency_correctness": {
+            "score": 4,
+            "evidence": "Dependencies are deferred because clarification is required."
+          },
+          "timeline_realism": {
+            "score": 4,
+            "evidence": "Timeline is deferred until missing information is clarified."
+          },
+          "risk_awareness": {
+            "score": 4,
+            "evidence": "0 risks are present; 0 domain risk terms found."
+          },
+          "recommendation_quality": {
+            "score": 4,
+            "evidence": "Clarification questions are the appropriate next recommendation."
+          },
+          "hallucination_avoidance": {
+            "score": 5,
+            "evidence": "Plan asks for clarification on vague or conflicting input."
+          },
+          "output_validity": {
+            "score": 5,
+            "evidence": "Clarification plan is schema-valid and internally consistent."
+          }
+        }
+      },
+      "sample_output": "evaluation\\sample_outputs\\VAGUE-001.plan.json"
+    },
+    {
+      "scenario": {
+        "id": "SCOPE-001",
+        "category": "unrealistic scope",
+        "input": "Build an enterprise healthcare marketplace with patient scheduling, EHR integration, billing, prescriptions, video calls, analytics, mobile apps, and HIPAA compliance in one week.",
+        "expected_behavior": "Flag unrealistic scope and healthcare compliance risk, recommend scope reduction or pilot planning, and avoid pretending the full scope is feasible in one week.",
+        "evaluation_focus": [
+          "scope risk detection",
+          "timeline realism",
+          "healthcare compliance",
+          "recommendation quality",
+          "risk awareness"
+        ]
+      },
+      "plan_summary": {
+        "project_name": "Build an enterprise healthcare marketplace with",
+        "domain": "healthcare",
+        "project_type": "healthcare workflow improvement",
+        "complexity": "high",
+        "status": "plan_generated",
+        "warnings": [
+          "The requested scope appears unrealistic for the stated timeline. Reduce scope or extend the schedule.",
+          "Healthcare workflows may require privacy, compliance, and security review."
+        ]
+      },
+      "evaluation": {
+        "scenario_id": "SCOPE-001",
+        "category": "unrealistic scope",
+        "status": "plan_generated",
+        "domain": "healthcare",
+        "complexity": "high",
+        "overall_score": 4.8,
+        "scores": {
+          "project_understanding": {
+            "score": 5,
+            "evidence": "Plan correctly identifies the healthcare domain. Scenario-specific terms appear in the plan."
+          },
+          "completeness": {
+            "score": 4,
+            "evidence": "7 major plan sections contain content."
+          },
+          "task_quality": {
+            "score": 5,
+            "evidence": "6 of 6 tasks include core execution details."
+          },
+          "milestone_usefulness": {
+            "score": 5,
+            "evidence": "3 milestones map to valid phases."
+          },
+          "dependency_correctness": {
+            "score": 5,
+            "evidence": "Task dependencies are represented in the explicit dependency list."
+          },
+          "timeline_realism": {
+            "score": 5,
+            "evidence": "Aggressive timeline is paired with warnings or scope risk."
+          },
+          "risk_awareness": {
+            "score": 5,
+            "evidence": "4 risks are present; 3 domain risk terms found."
+          },
+          "recommendation_quality": {
+            "score": 5,
+            "evidence": "3 recommendations include rationale."
+          },
+          "hallucination_avoidance": {
+            "score": 4,
+            "evidence": "Plan includes assumptions or keeps claims generic."
+          },
+          "output_validity": {
+            "score": 5,
+            "evidence": "Generated plan is schema-valid and internally consistent."
+          }
+        }
+      },
+      "sample_output": "evaluation\\sample_outputs\\SCOPE-001.plan.json"
+    },
+    {
+      "scenario": {
+        "id": "CONFLICT-001",
+        "category": "conflicting requirements",
+        "input": "Create a public analytics dashboard that shows individual patient appointment histories in real time, requires no login, stores no data, and must be HIPAA-compliant.",
+        "expected_behavior": "Identify conflicting privacy, access, real-time, and no-storage requirements; ask clarifying questions or include strong warnings before implementation planning.",
+        "evaluation_focus": [
+          "conflict detection",
+          "privacy risk",
+          "hallucination avoidance",
+          "clarification behavior",
+          "output validity"
+        ]
+      },
+      "plan_summary": {
+        "project_name": "Create a public analytics dashboard that",
+        "domain": "healthcare",
+        "project_type": "healthcare workflow improvement",
+        "complexity": "high",
+        "status": "plan_generated",
+        "warnings": [
+          "Healthcare workflows may require privacy, compliance, and security review."
+        ]
+      },
+      "evaluation": {
+        "scenario_id": "CONFLICT-001",
+        "category": "conflicting requirements",
+        "status": "plan_generated",
+        "domain": "healthcare",
+        "complexity": "high",
+        "overall_score": 4.7,
+        "scores": {
+          "project_understanding": {
+            "score": 5,
+            "evidence": "Plan correctly identifies the healthcare domain. Scenario-specific terms appear in the plan. Conflicts or uncertainty are surfaced."
+          },
+          "completeness": {
+            "score": 4,
+            "evidence": "7 major plan sections contain content."
+          },
+          "task_quality": {
+            "score": 5,
+            "evidence": "6 of 6 tasks include core execution details."
+          },
+          "milestone_usefulness": {
+            "score": 5,
+            "evidence": "3 milestones map to valid phases."
+          },
+          "dependency_correctness": {
+            "score": 5,
+            "evidence": "Task dependencies are represented in the explicit dependency list."
+          },
+          "timeline_realism": {
+            "score": 4,
+            "evidence": "Plan includes phase-level duration estimates."
+          },
+          "risk_awareness": {
+            "score": 5,
+            "evidence": "4 risks are present; 3 domain risk terms found."
+          },
+          "recommendation_quality": {
+            "score": 5,
+            "evidence": "3 recommendations include rationale."
+          },
+          "hallucination_avoidance": {
+            "score": 4,
+            "evidence": "Plan labels uncertainty through warnings or assumptions."
+          },
+          "output_validity": {
+            "score": 5,
+            "evidence": "Generated plan is schema-valid and internally consistent."
+          }
+        }
+      },
+      "sample_output": "evaluation\\sample_outputs\\CONFLICT-001.plan.json"
+    }
+  ]
+}
