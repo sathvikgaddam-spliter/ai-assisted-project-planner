@@ -1,3 +1,5 @@
+import re
+from datetime import datetime, timezone
 from typing import Dict, List, Mapping, Optional
 
 
@@ -18,9 +20,8 @@ REQUIRED_BUILD_PACK_FILES = [
     "coding_agent_prompt.md",
 ]
 
-
 def generate_build_pack(project_analysis, project_plan=None):
-    return {
+    build_pack = {
         "START_HERE.md": generate_start_here(project_analysis),
         "COPY_THIS_PROMPT.md": generate_copy_this_prompt(project_analysis),
         "project_brief.md": generate_project_brief(project_analysis),
@@ -35,6 +36,21 @@ def generate_build_pack(project_analysis, project_plan=None):
         "deployment_plan.md": generate_deployment_plan(project_analysis),
         "assumptions.md": generate_assumptions(project_analysis),
         "coding_agent_prompt.md": generate_coding_agent_prompt(project_analysis),
+    }
+    build_pack.update(generate_spec_kit_pack(project_analysis, project_plan))
+    return build_pack
+
+
+def generate_spec_kit_pack(project_analysis, project_plan=None):
+    feature_dir = _spec_feature_dir(project_analysis, project_plan)
+    return {
+        f"{feature_dir}/spec.md": generate_spec_kit_spec(project_analysis, project_plan),
+        f"{feature_dir}/plan.md": generate_spec_kit_plan(project_analysis, project_plan),
+        f"{feature_dir}/tasks.md": generate_spec_kit_tasks(project_analysis, project_plan),
+        f"{feature_dir}/research.md": generate_spec_kit_research(project_analysis, project_plan),
+        f"{feature_dir}/data-model.md": generate_spec_kit_data_model(project_analysis),
+        f"{feature_dir}/contracts/api-spec.md": generate_spec_kit_api_contract(project_analysis),
+        f"{feature_dir}/quickstart.md": generate_spec_kit_quickstart(project_analysis),
     }
 
 
@@ -391,6 +407,322 @@ def generate_assumptions(project_analysis):
     return _join(["# Assumptions", "", _bullets(assumptions)])
 
 
+def generate_spec_kit_spec(project_analysis, project_plan=None):
+    context = _context(project_analysis)
+    branch = _spec_branch_name(project_analysis, project_plan)
+    feature_name = _project_title(project_analysis, project_plan)
+    status = getattr(project_plan, "status", "draft") if project_plan else "draft"
+    stories = _user_story_lines(context)
+    requirements = [f"System MUST support {feature}." for feature in context["features"]]
+    outcomes = [f"Users can complete {workflow} in a tested workflow." for workflow in context["workflows"]]
+
+    lines = [
+        f"# Feature Specification: {feature_name}",
+        "",
+        f"**Feature Branch**: `{branch}`",
+        f"**Created**: {_today()}",
+        f"**Status**: {status}",
+        f"**Input**: User description: \"{feature_name}\"",
+        "",
+        "## User Scenarios & Testing *(mandatory)*",
+        "",
+    ]
+    for index, story in enumerate(stories, start=1):
+        priority = f"P{index}"
+        workflow = context["workflows"][min(index - 1, max(len(context["workflows"]) - 1, 0))] if context["workflows"] else "the primary workflow"
+        lines.extend(
+            [
+                f"### User Story {index} - {story['title']} (Priority: {priority})",
+                "",
+                story["description"],
+                "",
+                f"**Why this priority**: Enables {workflow}, which is required for the MVP.",
+                "",
+                f"**Independent Test**: Complete {workflow} using seeded or test data and verify the expected state is shown.",
+                "",
+                "**Acceptance Scenarios**:",
+                "",
+                f"1. **Given** a valid user, **When** they complete {workflow}, **Then** the system saves the result and shows a success state.",
+                "2. **Given** invalid or incomplete input, **When** the user submits the form, **Then** the system shows field-level validation and does not save bad data.",
+                "",
+                "---",
+                "",
+            ]
+        )
+
+    lines.extend(
+        [
+            "### Edge Cases",
+            "",
+            _bullets(["empty data sets", "invalid input", "permission denied", "network or API failure", "duplicate or conflicting records"]),
+            "",
+            "## Requirements *(mandatory)*",
+            "",
+            "### Functional Requirements",
+            _numbered(requirements),
+            "",
+            "### Key Entities *(include if feature involves data)*",
+            _bullets([f"**{entity}**: Core data object with ownership, status, timestamps, validation, and relationships." for entity in context["entities"]]),
+            "",
+            "## Success Criteria *(mandatory)*",
+            "",
+            "### Measurable Outcomes",
+            _numbered(outcomes),
+            "",
+            "## Assumptions",
+            _bullets(_spec_assumptions(project_analysis, project_plan)),
+        ]
+    )
+    return _join(_with_draft_notice(lines, project_plan))
+
+
+def generate_spec_kit_plan(project_analysis, project_plan=None):
+    context = _context(project_analysis)
+    feature_name = _project_title(project_analysis, project_plan)
+    feature_dir = _spec_feature_dir(project_analysis, project_plan)
+    lines = [
+        f"# Implementation Plan: {feature_name}",
+        "",
+        f"**Branch**: `{_spec_branch_name(project_analysis, project_plan)}` | **Date**: {_today()} | **Spec**: `{feature_dir}/spec.md`",
+        "",
+        f"**Input**: Feature specification from `/{feature_dir}/spec.md`",
+        "",
+        "## Summary",
+        "",
+        f"Build a runnable MVP for a {context['detected_project_type']} in the {context['domain']} domain using the generated requirements, architecture, API, frontend, testing, and deployment specs.",
+        "",
+        "## Technical Context",
+        "",
+        "**Language/Version**: To be selected by the implementing agent based on the target stack.",
+        "**Primary Dependencies**: Frontend framework, backend API framework, persistence layer, and test runner appropriate for the selected stack.",
+        "**Storage**: Persistent database or local storage suitable for MVP data durability.",
+        "**Testing**: Unit, API/integration, frontend, and end-to-end tests.",
+        f"**Target Platform**: Web application runtime for a {context['detected_project_type']}.",
+        f"**Project Type**: {context['detected_project_type']}",
+        "**Performance Goals**: Primary workflows should respond quickly under local/demo load.",
+        "**Constraints**: Use engineer-reviewed assumptions when source requirements are incomplete.",
+        f"**Scale/Scope**: MVP covering {', '.join(context['features'][:4]) or 'the requested core features'}.",
+        "",
+        "## Constitution Check",
+        "",
+        _bullets(
+            [
+                "Specifications drive implementation; do not skip spec, plan, tasks, or tests.",
+                "Each user story must be independently testable.",
+                "Implementation must generate runnable source code, not documentation-only output.",
+                "Draft assumptions must be visible in the generated README or handoff notes.",
+            ]
+        ),
+        "",
+        "## Project Structure",
+        "",
+        "### Documentation (this feature)",
+        "",
+        "```text",
+        f"{feature_dir}/",
+        "|-- plan.md",
+        "|-- research.md",
+        "|-- data-model.md",
+        "|-- quickstart.md",
+        "|-- contracts/",
+        "|   `-- api-spec.md",
+        "|-- spec.md",
+        "`-- tasks.md",
+        "```",
+        "",
+        "### Source Code (repository root)",
+        "",
+        "```text",
+        "backend-or-api/",
+        "frontend/",
+        "tests/",
+        "README.md",
+        "```",
+        "",
+        "**Structure Decision**: Use a modular full-stack layout with separate frontend, backend/API, persistence, and test responsibilities.",
+    ]
+    return _join(_with_draft_notice(lines, project_plan))
+
+
+def generate_spec_kit_tasks(project_analysis, project_plan=None):
+    context = _context(project_analysis)
+    feature_name = _project_title(project_analysis, project_plan)
+    feature_dir = _spec_feature_dir(project_analysis, project_plan)
+    lines = [
+        f"# Tasks: {feature_name}",
+        "",
+        f"**Input**: Design documents from `/{feature_dir}/`",
+        "**Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/api-spec.md",
+        "**Tests**: Include tests before implementation for each user story.",
+        "",
+        "## Format: `[ID] [P?] [Story] Description`",
+        "",
+        "- **[P]**: Can run in parallel when files do not conflict",
+        "- **[Story]**: Maps work to a user story for traceability",
+        "",
+        "## Phase 1: Setup (Shared Infrastructure)",
+        "",
+        "- [ ] T001 Create the application structure and README run commands.",
+        "- [ ] T002 Configure dependency management, environment variables, and local scripts.",
+        "- [ ] T003 [P] Configure linting, formatting, and test runner.",
+        "",
+        "## Phase 2: Foundational (Blocking Prerequisites)",
+        "",
+        "- [ ] T004 Define data models and persistence setup for core entities.",
+        "- [ ] T005 [P] Implement API routing, validation, error handling, and logging.",
+        "- [ ] T006 [P] Implement frontend app shell, shared state, and API client.",
+        "- [ ] T007 Add seed/demo data for local validation.",
+        "",
+    ]
+
+    stories = _user_story_lines(context)
+    task_id = 8
+    for index, story in enumerate(stories, start=1):
+        story_id = f"US{index}"
+        lines.extend(
+            [
+                f"## Phase {index + 2}: User Story {index} - {story['title']} (Priority: P{index})",
+                "",
+                f"**Goal**: {story['description']}",
+                f"**Independent Test**: Complete the {context['workflows'][min(index - 1, max(len(context['workflows']) - 1, 0))] if context['workflows'] else 'primary'} workflow and verify success, empty, error, and validation states.",
+                "",
+                f"- [ ] T{task_id:03d} [P] [{story_id}] Add failing tests for the story acceptance scenarios.",
+                f"- [ ] T{task_id + 1:03d} [{story_id}] Implement backend/service behavior and persistence for this story.",
+                f"- [ ] T{task_id + 2:03d} [{story_id}] Implement frontend screens, components, and states for this story.",
+                f"- [ ] T{task_id + 3:03d} [{story_id}] Connect frontend to API and verify authorization and validation behavior.",
+                f"- [ ] T{task_id + 4:03d} [{story_id}] Run story-specific tests and update quickstart notes if commands change.",
+                "",
+                "**Checkpoint**: This user story is independently functional and testable.",
+                "",
+            ]
+        )
+        task_id += 5
+
+    lines.extend(
+        [
+            "## Final Phase: Polish & Cross-Cutting Concerns",
+            "",
+            f"- [ ] T{task_id:03d} [P] Add unit, API, frontend, and end-to-end coverage for uncovered edge cases.",
+            f"- [ ] T{task_id + 1:03d} Improve accessibility, responsive behavior, and user-facing error states.",
+            f"- [ ] T{task_id + 2:03d} Validate quickstart.md from a clean checkout.",
+            f"- [ ] T{task_id + 3:03d} Update README with exact install, run, test, and build commands.",
+            "",
+            "## Dependencies & Execution Order",
+            "",
+            _bullets(["Setup before foundation.", "Foundation before user stories.", "User stories can proceed in priority order or parallel after foundation.", "Polish after selected user stories are complete."]),
+        ]
+    )
+    return _join(_with_draft_notice(lines, project_plan))
+
+
+def generate_spec_kit_research(project_analysis, project_plan=None):
+    context = _context(project_analysis)
+    return _join(
+        _with_draft_notice(
+            [
+                f"# Research: {_project_title(project_analysis, project_plan)}",
+                "",
+                "## Decisions",
+                "",
+                _bullets(
+                    [
+                        f"Treat the request as a {context['detected_project_type']}.",
+                        "Use a modular full-stack implementation unless the final coding agent selects a simpler single-process stack.",
+                        "Include tests and local run commands as required completion artifacts.",
+                        "Use assumptions.md and this research file when requirements are incomplete.",
+                    ]
+                ),
+                "",
+                "## Rationale",
+                "",
+                _bullets(
+                    [
+                        "The existing planner inferred users, workflows, entities, frontend needs, backend needs, and infrastructure assumptions.",
+                        "Spec Kit-style artifacts make those inferences traceable before implementation starts.",
+                        "A coding agent can implement from these files without needing the full Spec Kit CLI.",
+                    ]
+                ),
+                "",
+                "## Open Questions",
+                "",
+                _bullets(_clarification_questions(project_plan)),
+            ],
+            project_plan,
+        )
+    )
+
+
+def generate_spec_kit_data_model(project_analysis):
+    context = _context(project_analysis)
+    lines = ["# Data Model", ""]
+    for entity in context["entities"]:
+        lines.extend(
+            [
+                f"## {entity}",
+                "",
+                "**Fields**",
+                _bullets(_entity_fields(entity)),
+                "",
+                "**Validation Rules**",
+                _bullets(["id is required and stable", "created_at and updated_at are maintained", "status uses an explicit allowed value", "owner or permission checks apply where user-owned"]),
+                "",
+                "**Relationships**",
+                _bullets([f"{entity} records relate to users, workflows, or parent records as required by the MVP."]),
+                "",
+            ]
+        )
+    return _join(lines)
+
+
+def generate_spec_kit_api_contract(project_analysis):
+    context = _context(project_analysis)
+    lines = [
+        "# API Contract",
+        "",
+        "## Conventions",
+        "",
+        _bullets(["JSON request and response bodies", "field-level validation errors", "404 for missing resources", "authorization checks on user-owned records"]),
+        "",
+    ]
+    for entity in context["entities"]:
+        resource = _resource_name(entity)
+        lines.extend(
+            [
+                f"## /api/{resource}",
+                "",
+                f"- `GET /api/{resource}` lists {resource}.",
+                f"- `POST /api/{resource}` creates a {entity}.",
+                f"- `GET /api/{resource}/{{id}}` returns one {entity}.",
+                f"- `PATCH /api/{resource}/{{id}}` updates a {entity}.",
+                f"- `DELETE /api/{resource}/{{id}}` archives or deletes a {entity}.",
+                "",
+            ]
+        )
+    lines.extend(["## Workflow APIs", "", _bullets(context["backend"])])
+    return _join(lines)
+
+
+def generate_spec_kit_quickstart(project_analysis):
+    context = _context(project_analysis)
+    return _join(
+        [
+            f"# Quickstart: {context['detected_project_type']}",
+            "",
+            "## Local Setup",
+            "",
+            _numbered(["Install backend dependencies.", "Install frontend dependencies.", "Create local environment variables.", "Apply migrations or initialize local persistence.", "Start backend/API service.", "Start frontend dev server."]),
+            "",
+            "## Validation",
+            "",
+            _numbered(["Run unit tests.", "Run API/integration tests.", "Run frontend tests.", "Run end-to-end tests for the primary workflows.", "Open the app locally and complete each MVP user story."]),
+            "",
+            "## Expected Result",
+            "",
+            f"The generated project runs locally and supports {', '.join(context['workflows']) or 'the requested workflows'}.",
+        ]
+    )
+
+
 def generate_coding_agent_prompt(project_analysis):
     context = _context(project_analysis)
     return _join(
@@ -421,6 +753,92 @@ def generate_coding_agent_prompt(project_analysis):
             "Do not stop after reading files. Do not return only a status report. Do not skip tests, do not invent production credentials, and do not remove validation or engineer-review steps.",
         ]
     )
+
+
+def _spec_feature_dir(project_analysis, project_plan=None) -> str:
+    return f"specs/{_spec_branch_name(project_analysis, project_plan)}"
+
+
+def _spec_branch_name(project_analysis, project_plan=None) -> str:
+    return f"001-{_slugify(_project_title(project_analysis, project_plan))}"
+
+
+def _project_title(project_analysis, project_plan=None) -> str:
+    plan_name = getattr(project_plan, "project_name", "") if project_plan else ""
+    if plan_name:
+        return _display_title(plan_name)
+    detected_type = project_analysis.get("detected_project_type") or project_analysis.get("project_type")
+    domain = project_analysis.get("domain", "software")
+    return _display_title(f"{detected_type or 'project'} in {domain}")
+
+
+def _display_title(value: str) -> str:
+    normalized = str(value).strip()
+    normalized = re.sub(r"^(build|create|develop|design|implement|plan)\s+(a|an|the)\s+", "", normalized, flags=re.IGNORECASE)
+    normalized = re.sub(r"^(build|create|develop|design|implement|plan)\s+", "", normalized, flags=re.IGNORECASE)
+    if not normalized:
+        return "Project"
+    small_words = {"a", "an", "and", "for", "in", "of", "or", "the", "to", "with"}
+    words = normalized.split()
+    titled = [word.capitalize() if index == 0 or word.lower() not in small_words else word.lower() for index, word in enumerate(words)]
+    return " ".join(titled)
+
+
+def _slugify(value: str) -> str:
+    normalized = str(value).strip().lower()
+    normalized = re.sub(r"^(build|create|develop|design|implement|plan)\s+(a|an|the)\s+", "", normalized)
+    normalized = re.sub(r"^(build|create|develop|design|implement|plan)\s+", "", normalized)
+    slug = re.sub(r"[^a-z0-9]+", "-", normalized)
+    slug = re.sub(r"-+", "-", slug).strip("-")
+    return slug or "project"
+
+
+def _today() -> str:
+    return datetime.now(timezone.utc).date().isoformat()
+
+
+def _with_draft_notice(lines: List[str], project_plan=None) -> List[str]:
+    if getattr(project_plan, "status", "") != "clarification_required":
+        return lines
+    notice = [
+        "> DRAFT WARNING: Requirements are incomplete. Validate assumptions and answer clarification questions before treating these specs as production-ready.",
+        "",
+    ]
+    return lines[:1] + ["", *notice] + lines[1:]
+
+
+def _spec_assumptions(project_analysis, project_plan=None) -> List[str]:
+    assumptions = list(getattr(project_plan, "assumptions", []) or [])
+    assumptions.extend(
+        [
+            "The implementation agent will choose concrete framework versions unless a stack is specified later.",
+            "Generated specs are reviewed by an engineer before production use.",
+        ]
+    )
+    if project_analysis.get("requires_clarification"):
+        assumptions.append("The original request needs clarification, so these specs are draft guidance.")
+    return assumptions
+
+
+def _clarification_questions(project_plan=None) -> List[str]:
+    questions = list(getattr(project_plan, "clarification_questions", []) or [])
+    return questions or ["No open questions were generated, but engineer review is still required."]
+
+
+def _user_story_lines(context: Mapping[str, object]) -> List[Dict[str, str]]:
+    workflows = list(context["workflows"])[:3] or ["core feature usage"]
+    roles = list(context["roles"]) or ["user"]
+    stories = []
+    for index, workflow in enumerate(workflows):
+        role = roles[min(index, len(roles) - 1)]
+        title = workflow.capitalize()
+        stories.append(
+            {
+                "title": title,
+                "description": f"As a {role}, I can complete {workflow} so that the application delivers the intended MVP value.",
+            }
+        )
+    return stories
 
 
 def _context(project_analysis: Mapping[str, object]) -> Dict[str, object]:

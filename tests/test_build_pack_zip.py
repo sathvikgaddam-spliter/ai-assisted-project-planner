@@ -31,6 +31,13 @@ def test_save_build_pack_zip_creates_generated_project_bundle(tmp_path):
         {
             "generated_project/project_plan.md",
             "generated_project/project_plan.json",
+            "generated_project/specs/001-saas-expense-tracker/spec.md",
+            "generated_project/specs/001-saas-expense-tracker/plan.md",
+            "generated_project/specs/001-saas-expense-tracker/tasks.md",
+            "generated_project/specs/001-saas-expense-tracker/research.md",
+            "generated_project/specs/001-saas-expense-tracker/data-model.md",
+            "generated_project/specs/001-saas-expense-tracker/contracts/api-spec.md",
+            "generated_project/specs/001-saas-expense-tracker/quickstart.md",
         }
     )
     assert "START_HERE.md" in names
@@ -68,6 +75,25 @@ def test_build_pack_zip_contains_serialized_project_plan(tmp_path):
     assert "## Phases" in markdown
     assert payload["project_name"] == plan.project_name
     assert payload["phases"]
+
+
+def test_build_pack_zip_contains_spec_kit_style_specs(tmp_path):
+    description = "Build a hospital appointment scheduling system"
+    analysis = analyze_project(description)
+    plan = generate_project_plan(description, use_ai=False)
+
+    zip_path = Path(save_build_pack_zip(analysis, plan, str(tmp_path)))
+
+    with zipfile.ZipFile(zip_path) as archive:
+        names = set(archive.namelist())
+        spec = archive.read("generated_project/specs/001-hospital-appointment-scheduling-system/spec.md").decode("utf-8")
+        plan_doc = archive.read("generated_project/specs/001-hospital-appointment-scheduling-system/plan.md").decode("utf-8")
+        tasks = archive.read("generated_project/specs/001-hospital-appointment-scheduling-system/tasks.md").decode("utf-8")
+
+    assert "generated_project/specs/001-hospital-appointment-scheduling-system/contracts/api-spec.md" in names
+    assert "Feature Specification: Hospital Appointment Scheduling System" in spec
+    assert "Implementation Plan: Hospital Appointment Scheduling System" in plan_doc
+    assert "Tasks: Hospital Appointment Scheduling System" in tasks
 
 
 def test_build_pack_zip_preserves_phase_5_prompt_pack_zip_structure(tmp_path):

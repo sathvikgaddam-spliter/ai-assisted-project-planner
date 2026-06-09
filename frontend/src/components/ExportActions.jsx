@@ -70,7 +70,7 @@ function ExportActions({ apiBaseUrl, plan, projectDescription }) {
           {promptZipLoading ? "Preparing ZIP" : "Download Prompt Pack ZIP"}
         </button>
         <button type="button" onClick={downloadCodingAgentZip} disabled={agentZipLoading}>
-          {agentZipLoading ? "Preparing Agent ZIP" : "Download Coding Agent ZIP"}
+          {agentZipLoading ? "Preparing Agent ZIP" : "Download Coding Agent + Specs ZIP"}
         </button>
         <button type="button" onClick={copySummary}>{copied ? "Copied" : "Copy summary"}</button>
       </div>

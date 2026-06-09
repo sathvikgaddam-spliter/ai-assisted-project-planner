@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 from models import ProjectPlan
-from spec_generators import REQUIRED_BUILD_PACK_FILES, generate_build_pack
+from spec_generators import generate_build_pack
 
 
 DEFAULT_OUTPUT_DIR = Path("outputs")
@@ -79,8 +79,8 @@ def save_build_pack_zip(project_analysis: Dict[str, Any], project_plan: ProjectP
         archive.writestr("START_HERE.md", build_pack["START_HERE.md"])
         archive.writestr("COPY_THIS_PROMPT.md", build_pack["COPY_THIS_PROMPT.md"])
 
-        for filename in REQUIRED_BUILD_PACK_FILES:
-            archive.writestr(f"generated_project/{filename}", build_pack[filename])
+        for filename, content in build_pack.items():
+            archive.writestr(f"generated_project/{filename}", content)
 
         archive.writestr("generated_project/project_plan.md", _render_markdown(project_plan))
         archive.writestr(

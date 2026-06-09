@@ -14,12 +14,16 @@ def test_generate_build_pack_returns_all_required_files():
 
     build_pack = generate_build_pack(analysis, plan)
 
-    assert set(build_pack.keys()) == set(REQUIRED_BUILD_PACK_FILES)
+    assert set(REQUIRED_BUILD_PACK_FILES).issubset(build_pack.keys())
+    assert "specs/001-saas-expense-tracker/spec.md" in build_pack
+    assert "specs/001-saas-expense-tracker/plan.md" in build_pack
+    assert "specs/001-saas-expense-tracker/tasks.md" in build_pack
 
 
 def test_generated_build_pack_files_are_non_empty_markdown():
     analysis = analyze_project("Build a SaaS expense tracker")
-    build_pack = generate_build_pack(analysis)
+    plan = generate_project_plan("Build a SaaS expense tracker", use_ai=False)
+    build_pack = generate_build_pack(analysis, plan)
 
     for filename, content in build_pack.items():
         assert filename.endswith(".md")
@@ -114,3 +118,36 @@ def test_implementation_steps_include_build_order_and_milestones():
     assert "## Milestones" in implementation_steps
     assert "Complete" in implementation_steps
     assert "Testing Checkpoints" in implementation_steps
+
+
+def test_spec_kit_style_specs_include_project_specific_content():
+    description = "Build a marketplace for used textbooks"
+    analysis = analyze_project(description)
+    plan = generate_project_plan(description, use_ai=False)
+    build_pack = generate_build_pack(analysis, plan)
+
+    spec = build_pack["specs/001-marketplace-for-used-textbooks/spec.md"]
+    implementation_plan = build_pack["specs/001-marketplace-for-used-textbooks/plan.md"]
+    tasks = build_pack["specs/001-marketplace-for-used-textbooks/tasks.md"]
+
+    assert "# Feature Specification: Marketplace for Used Textbooks" in spec
+    assert "User Scenarios & Testing" in spec
+    assert "System MUST support listings." in spec
+    assert "Implementation Plan: Marketplace for Used Textbooks" in implementation_plan
+    assert "Constitution Check" in implementation_plan
+    assert "Tasks: Marketplace for Used Textbooks" in tasks
+    assert "User Story 1" in tasks
+
+
+def test_draft_spec_kit_specs_include_clarification_warning():
+    description = "Build app"
+    analysis = analyze_project(description)
+    plan = generate_project_plan(description, use_ai=False)
+    build_pack = generate_build_pack(analysis, plan)
+
+    spec = next(content for name, content in build_pack.items() if name.endswith("/spec.md"))
+    tasks = next(content for name, content in build_pack.items() if name.endswith("/tasks.md"))
+
+    assert "DRAFT WARNING" in spec
+    assert "Requirements are incomplete" in spec
+    assert "DRAFT WARNING" in tasks
