@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 function ExportActions({ apiBaseUrl, plan, projectDescription }) {
   const [copied, setCopied] = useState(false);
-  const [zipLoading, setZipLoading] = useState(false);
+  const [promptZipLoading, setPromptZipLoading] = useState(false);
+  const [agentZipLoading, setAgentZipLoading] = useState(false);
   const [zipError, setZipError] = useState("");
 
   if (!plan) {
@@ -25,33 +26,38 @@ function ExportActions({ apiBaseUrl, plan, projectDescription }) {
   }
 
   async function downloadPromptPackZip() {
-    setZipLoading(true);
+    setPromptZipLoading(true);
     setZipError("");
 
     try {
-      const response = await fetch(`${apiBaseUrl}/generate-plan-zip`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ project_description: projectDescription || plan.description }),
-      });
-
-      if (!response.ok) {
-        let message = "Unable to download prompt pack ZIP.";
-        try {
-          const payload = await response.json();
-          message = payload.detail || message;
-        } catch {
-          // Keep the generic download error when the response is not JSON.
-        }
-        throw new Error(message);
-      }
-
-      const blob = await response.blob();
-      downloadBlob(filenameFromResponse(response) || "project-plan.zip", blob);
+      await downloadZipFromEndpoint(
+        `${apiBaseUrl}/generate-plan-zip`,
+        projectDescription || plan.description,
+        "project-plan.zip",
+        "Unable to download prompt pack ZIP.",
+      );
     } catch (requestError) {
       setZipError(requestError.message || "Unable to download prompt pack ZIP.");
     } finally {
-      setZipLoading(false);
+      setPromptZipLoading(false);
+    }
+  }
+
+  async function downloadCodingAgentZip() {
+    setAgentZipLoading(true);
+    setZipError("");
+
+    try {
+      await downloadZipFromEndpoint(
+        `${apiBaseUrl}/generate-coding-agent-zip`,
+        projectDescription || plan.description,
+        "coding-agent-job.zip",
+        "Unable to download coding agent ZIP.",
+      );
+    } catch (requestError) {
+      setZipError(requestError.message || "Unable to download coding agent ZIP.");
+    } finally {
+      setAgentZipLoading(false);
     }
   }
 
@@ -60,14 +66,39 @@ function ExportActions({ apiBaseUrl, plan, projectDescription }) {
       <div className="export-actions">
         <button type="button" onClick={downloadJson}>Download JSON</button>
         <button type="button" onClick={downloadMarkdown}>Download Markdown</button>
-        <button type="button" onClick={downloadPromptPackZip} disabled={zipLoading}>
-          {zipLoading ? "Preparing ZIP" : "Download Prompt Pack ZIP"}
+        <button type="button" onClick={downloadPromptPackZip} disabled={promptZipLoading}>
+          {promptZipLoading ? "Preparing ZIP" : "Download Prompt Pack ZIP"}
+        </button>
+        <button type="button" onClick={downloadCodingAgentZip} disabled={agentZipLoading}>
+          {agentZipLoading ? "Preparing Agent ZIP" : "Download Coding Agent ZIP"}
         </button>
         <button type="button" onClick={copySummary}>{copied ? "Copied" : "Copy summary"}</button>
       </div>
       {zipError && <div className="export-error">{zipError}</div>}
     </div>
   );
+}
+
+async function downloadZipFromEndpoint(endpoint, projectDescription, fallbackFilename, defaultErrorMessage) {
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ project_description: projectDescription }),
+  });
+
+  if (!response.ok) {
+    let message = defaultErrorMessage;
+    try {
+      const payload = await response.json();
+      message = payload.detail || message;
+    } catch {
+      // Keep the generic download error when the response is not JSON.
+    }
+    throw new Error(message);
+  }
+
+  const blob = await response.blob();
+  downloadBlob(filenameFromResponse(response) || fallbackFilename, blob);
 }
 
 function downloadFile(filename, content, type) {

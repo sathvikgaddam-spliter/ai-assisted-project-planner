@@ -7,7 +7,7 @@ import PhaseTimeline from "./PhaseTimeline.jsx";
 import RiskCards from "./RiskCards.jsx";
 import StatCard from "./StatCard.jsx";
 
-function ResultDashboard({ plan }) {
+function ResultDashboard({ apiBaseUrl, plan, projectDescription }) {
   if (!plan) {
     return (
       <motion.section
@@ -107,7 +107,7 @@ function ResultDashboard({ plan }) {
           </div>
           <div className="status-pill">{plan.status}</div>
         </div>
-        <ExportActions plan={plan} />
+        <ExportActions apiBaseUrl={apiBaseUrl} plan={plan} projectDescription={projectDescription} />
       </motion.section>
 
       <motion.div className="stat-grid" variants={dashboardItem}>

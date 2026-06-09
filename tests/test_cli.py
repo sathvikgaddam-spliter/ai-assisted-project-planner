@@ -19,10 +19,12 @@ def test_cli_saves_prompt_pack_zip(monkeypatch, capsys):
     )
 
     monkeypatch.setattr("builtins.input", lambda _: "Build a CLI test project.")
+    monkeypatch.setattr(cli, "analyze_project", lambda _: {"domain": "software"})
     monkeypatch.setattr(cli, "generate_project_plan", lambda _: plan)
     monkeypatch.setattr(cli, "save_json_output", lambda _: Path("outputs/cli-plan.plan.json"))
     monkeypatch.setattr(cli, "save_markdown_output", lambda _: Path("outputs/cli-plan.plan.md"))
     monkeypatch.setattr(cli, "save_prompt_pack_zip", lambda _: "outputs/cli-plan.prompt_pack.zip")
+    monkeypatch.setattr(cli, "save_build_pack_zip", lambda analysis, plan: "outputs/cli-plan.coding-agent-job.zip")
 
     result = cli.main()
     output = capsys.readouterr().out
@@ -31,6 +33,7 @@ def test_cli_saves_prompt_pack_zip(monkeypatch, capsys):
     assert "JSON output: outputs\\cli-plan.plan.json" in output or "JSON output: outputs/cli-plan.plan.json" in output
     assert "Markdown output: outputs\\cli-plan.plan.md" in output or "Markdown output: outputs/cli-plan.plan.md" in output
     assert "Prompt Pack ZIP saved to: outputs/cli-plan.prompt_pack.zip" in output
+    assert "Coding Agent ZIP saved to: outputs/cli-plan.coding-agent-job.zip" in output
 
 
 def test_cli_shows_draft_banner_for_incomplete_draft_plan(monkeypatch, capsys):
@@ -65,10 +68,12 @@ def test_cli_shows_draft_banner_for_incomplete_draft_plan(monkeypatch, capsys):
     )
 
     monkeypatch.setattr("builtins.input", lambda _: "Build a racing game")
+    monkeypatch.setattr(cli, "analyze_project", lambda _: {"domain": "software"})
     monkeypatch.setattr(cli, "generate_project_plan", lambda _: plan)
     monkeypatch.setattr(cli, "save_json_output", lambda _: Path("outputs/draft-cli-plan.plan.json"))
     monkeypatch.setattr(cli, "save_markdown_output", lambda _: Path("outputs/draft-cli-plan.plan.md"))
     monkeypatch.setattr(cli, "save_prompt_pack_zip", lambda _: "outputs/draft-cli-plan.prompt_pack.zip")
+    monkeypatch.setattr(cli, "save_build_pack_zip", lambda analysis, plan: "outputs/draft-cli-plan.coding-agent-job.zip")
 
     result = cli.main()
     output = capsys.readouterr().out

@@ -1,8 +1,8 @@
 # AI-Assisted Project Planner
 
-AI-Assisted Project Planner is a full-stack AI planning product that turns a natural-language project description into a structured execution plan and engineering handoff package. It combines a React product UI, a FastAPI backend, Gemini-powered planning, deterministic fallback generation, Pydantic validation, role-based engineering prompts, prompt quality evaluation, and an evaluation framework for benchmarking planning quality.
+AI-Assisted Project Planner is a full-stack AI planning product that turns a natural-language project description into a structured execution plan and engineering handoff package. It combines a React product UI, a FastAPI backend, Gemini-powered planning, deterministic fallback generation, Pydantic validation, role-based engineering prompts, prompt quality evaluation, one-line project understanding, implementation-ready build-pack generation, and an evaluation framework for benchmarking planning quality.
 
-The system is designed for portfolio, classroom, and research demonstration use: users can describe a project, generate a plan, inspect phases/tasks/milestones/risks/dependencies, export results, download a prompt pack ZIP, and evaluate planner behavior across realistic benchmark scenarios.
+The system is designed for portfolio, classroom, and research demonstration use: users can describe a project, generate a plan, inspect phases/tasks/milestones/risks/dependencies, export results, download Prompt Pack and Build Pack ZIP files, and evaluate planner behavior across realistic benchmark scenarios.
 
 ## Key Features
 
@@ -12,9 +12,12 @@ The system is designed for portfolio, classroom, and research demonstration use:
 - Deterministic fallback planner when AI generation is unavailable
 - Pydantic models for structured validation of generated plans
 - Project analyzer for domain, type, complexity, and ambiguity detection
+- Deterministic project understanding for one-line project ideas
+- Project-type detection for SaaS, AI, dashboard, ecommerce, marketplace, mobile, backend, and generic web apps
 - Role-based engineering prompts for frontend, backend, database, QA, DevOps, and security work
 - Deterministic prompt quality evaluation with scores, issues, strengths, and suggestions
-- Export actions for JSON, Markdown, Prompt Pack ZIP, and summary copy
+- Implementation-ready coding-agent job package generation
+- Export actions for JSON, Markdown, Prompt Pack ZIP, Coding Agent ZIP, and summary copy
 - Sample prompt cards for fast demos
 - Warning/debug notes for local testing without exposing API keys
 - Benchmark evaluation framework with scenarios, scoring, and reports
@@ -27,6 +30,7 @@ React Frontend
     |
     | POST /generate-plan
     | POST /generate-plan-zip
+    | POST /generate-build-pack-zip
     v
 FastAPI Backend
     |
@@ -44,8 +48,10 @@ Pydantic ProjectPlan Validation
     |
     +--> Prompt Quality Evaluator
     |
+    +--> Build Pack Specification Generator
+    |
     v
-JSON Response / UI Dashboard / Markdown Export / Prompt Pack ZIP / Benchmark Reports
+JSON Response / UI Dashboard / Markdown Export / Prompt Pack ZIP / Coding Agent ZIP / Benchmark Reports
 ```
 
 The backend keeps the planner logic modular so the same planning engine can be used by the CLI, API, benchmark runner, and future integrations.
@@ -92,6 +98,7 @@ The backend keeps the planner logic modular so the same planning engine can be u
 │   ├── prompt_evaluator.py
 │   ├── prompt_generator.py
 │   ├── project_analyzer.py
+│   ├── spec_generators.py
 │   ├── utils.py
 │   └── scorer.py
 ├── tests/
@@ -212,6 +219,15 @@ curl -X POST http://127.0.0.1:8000/generate-plan-zip \
   -d "{\"project_description\":\"Build a hospital appointment scheduling system with doctor availability and patient reminders\"}"
 ```
 
+Download a Coding Agent ZIP:
+
+```bash
+curl -X POST http://127.0.0.1:8000/generate-build-pack-zip \
+  -H "Content-Type: application/json" \
+  -o project-coding-agent-job.zip \
+  -d "{\"project_description\":\"Build a SaaS expense tracker\"}"
+```
+
 ## Run the Frontend
 
 ```bash
@@ -230,9 +246,10 @@ The frontend calls:
 ```text
 http://127.0.0.1:8000/api/generate-plan
 http://127.0.0.1:8000/generate-plan-zip
+http://127.0.0.1:8000/generate-build-pack-zip
 ```
 
-Make sure the backend is running before generating a plan or downloading a Prompt Pack ZIP from the UI.
+Make sure the backend is running before generating a plan or downloading ZIP exports from the UI.
 
 Frontend users can:
 
@@ -241,6 +258,7 @@ Frontend users can:
 - download JSON.
 - download Markdown.
 - download Prompt Pack ZIP.
+- download Coding Agent ZIP.
 - copy a summary.
 
 Example frontend fetch:
@@ -267,7 +285,8 @@ The CLI saves:
 
 - `outputs/<project>.plan.json`
 - `outputs/<project>.plan.md`
-- `outputs/<project>.prompt_pack.zip`
+- `outputs/<project>-project-plan.zip`
+- `outputs/<project>-coding-agent-job.zip`
 
 ## Phase 5 — Engineering Prompt Pack
 
@@ -309,11 +328,67 @@ prompt-evaluations/
 
 Clarification-required plans still produce a ZIP with `project-plan/project_plan.md` and `project-plan/project_plan.json`, but they do not include engineering prompt files because there is not enough implementation detail yet.
 
+Meaningful but incomplete draft plans may include provisional engineering prompts, prompt evaluations, and draft notes. Meaningless or unusable inputs remain clarification-only and do not receive prompt artifacts.
+
+## Phase 6 — AI Coding-Agent Build Pack
+
+Phase 6 adds deterministic project understanding and implementation-ready build-pack generation.
+
+The system does not automatically build software. It prepares structured implementation documents that engineers can review and then provide to Codex, Claude Code, Cursor, GitHub Copilot, Lovable, Bolt, Gemini, or similar coding agents.
+
+Users can enter a one-line project idea, such as "Build a SaaS expense tracker" or "Build a marketplace for used textbooks." The planner infers project type, domain, target users, likely user roles, workflows, core features, data entities, frontend needs, backend/API needs, testing needs, and deployment assumptions.
+
+Supported deterministic project-type detection includes:
+
+- backend platform
+- AI application
+- dashboard
+- SaaS application
+- mobile application
+- ecommerce application
+- marketplace
+- generic web application
+
+Unknown or unclear meaningful projects fall back to `generic web application`.
+
+## Coding Agent ZIP
+
+The Coding Agent ZIP is the main handoff artifact for Codex, Claude Code, Cursor, GitHub Copilot, Lovable, Bolt, Gemini, or similar coding agents. It is designed to tell the coding agent exactly what to build and to prevent documentation-only responses.
+
+```text
+START_HERE.md
+COPY_THIS_PROMPT.md
+
+generated_project/
+  START_HERE.md
+  COPY_THIS_PROMPT.md
+  project_brief.md
+  requirements.md
+  mvp_scope.md
+  architecture.md
+  database_schema.md
+  api_spec.md
+  frontend_spec.md
+  implementation_steps.md
+  testing_plan.md
+  deployment_plan.md
+  assumptions.md
+  coding_agent_prompt.md
+  project_plan.md
+  project_plan.json
+```
+
+Users should open `COPY_THIS_PROMPT.md`, paste it into Codex/Claude/Cursor, and attach or reference the rest of the ZIP contents. The prompt explicitly instructs the coding agent to build the requested app, generate actual source code, create build/runtime configuration, write tests, and add local run commands.
+
+The generated documents are deterministic, project-adaptive, and designed to give coding agents enough structure to implement a complete MVP rather than a minimal prototype. `START_HERE.md` tells coding agents to generate actual source code, build/runtime configuration, run scripts, tests, and a README with local commands. The `coding_agent_prompt.md` file instructs coding agents to follow the architecture, database schema, API spec, frontend spec, testing plan, and assumptions.
+
 ## Project Boundary
 
 This project helps users plan and prepare implementation. It does not automatically build, deploy, or guarantee production-ready software.
 
-Generated plans and prompts should be reviewed by engineers before use. The prompt pack is intended to improve handoff quality for external AI coding tools, not to replace architecture review, security review, QA, deployment judgment, or human ownership of the implementation.
+Generated plans, prompts, and build packs should be reviewed by engineers before use. Prompt packs and build packs are intended to improve handoff quality for external AI coding tools, not to replace architecture review, security review, QA, deployment judgment, or human ownership of the implementation.
+
+Coding agents should follow the generated specifications, but human review is still required before treating any generated software as production-ready.
 
 The platform should not be treated as an autonomous website builder, application generator, production deployment tool, or compliance guarantee.
 

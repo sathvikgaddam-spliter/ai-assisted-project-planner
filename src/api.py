@@ -12,7 +12,8 @@ if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
 from planner import generate_project_plan
-from utils import is_draft_plan, save_prompt_pack_zip
+from project_analyzer import analyze_project
+from utils import is_draft_plan, save_build_pack_zip, save_prompt_pack_zip
 
 
 class GeneratePlanRequest(BaseModel):
@@ -28,6 +29,7 @@ app = FastAPI(title="AI-Assisted Project Planner API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origin_regex=r"^http://(localhost|127\.0\.0\.1):\d+$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -67,6 +69,31 @@ def generate_plan_zip(request: GeneratePlanRequest):
     try:
         plan = generate_project_plan(request.project_description)
         zip_path = Path(save_prompt_pack_zip(plan))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return FileResponse(
+        path=zip_path,
+        media_type="application/zip",
+        filename=zip_path.name,
+    )
+
+
+@app.post("/generate-build-pack-zip")
+def generate_build_pack_zip(request: GeneratePlanRequest):
+    return _generate_coding_agent_zip_response(request)
+
+
+@app.post("/generate-coding-agent-zip")
+def generate_coding_agent_zip(request: GeneratePlanRequest):
+    return _generate_coding_agent_zip_response(request)
+
+
+def _generate_coding_agent_zip_response(request: GeneratePlanRequest):
+    try:
+        project_analysis = analyze_project(request.project_description)
+        plan = generate_project_plan(request.project_description)
+        zip_path = Path(save_build_pack_zip(project_analysis, plan))
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 

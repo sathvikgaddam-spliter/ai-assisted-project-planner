@@ -629,8 +629,11 @@ textarea:focus {
   text-transform: capitalize;
 }
 
-.export-actions {
+.export-actions-wrap {
   grid-column: 1 / -1;
+}
+
+.export-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -650,6 +653,12 @@ textarea:focus {
   color: #ffffff;
   background: #1d1d1f;
   box-shadow: none;
+}
+
+.export-error {
+  margin-top: 10px;
+  color: #b42318;
+  font-size: 0.9rem;
 }
 
 .stat-grid {

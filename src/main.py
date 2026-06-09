@@ -1,5 +1,6 @@
 from planner import generate_project_plan
-from utils import is_draft_plan, save_json_output, save_markdown_output, save_prompt_pack_zip
+from project_analyzer import analyze_project
+from utils import is_draft_plan, save_build_pack_zip, save_json_output, save_markdown_output, save_prompt_pack_zip
 
 
 def main() -> int:
@@ -7,6 +8,7 @@ def main() -> int:
     description = input("Enter project description: ").strip()
 
     try:
+        project_analysis = analyze_project(description)
         plan = generate_project_plan(description)
     except ValueError as exc:
         print(f"Validation error: {exc}")
@@ -40,11 +42,13 @@ def main() -> int:
     json_path = save_json_output(plan)
     markdown_path = save_markdown_output(plan)
     prompt_pack_zip_path = save_prompt_pack_zip(plan)
+    coding_agent_zip_path = save_build_pack_zip(project_analysis, plan)
 
     print("")
     print(f"JSON output: {json_path}")
     print(f"Markdown output: {markdown_path}")
     print(f"Prompt Pack ZIP saved to: {prompt_pack_zip_path}")
+    print(f"Coding Agent ZIP saved to: {coding_agent_zip_path}")
     return 0
 
 

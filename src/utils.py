@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 from models import ProjectPlan
+from spec_generators import REQUIRED_BUILD_PACK_FILES, generate_build_pack
 
 
 DEFAULT_OUTPUT_DIR = Path("outputs")
@@ -64,6 +65,28 @@ def save_prompt_pack_zip(plan: ProjectPlan, output_dir: str = "outputs") -> str:
             archive.writestr("draft-notes/assumptions.md", _render_draft_assumptions(plan))
             archive.writestr("draft-notes/clarification-questions.md", _render_draft_clarification_questions(plan))
             archive.writestr("draft-notes/draft-warning.md", _render_draft_warning())
+
+    return str(zip_path)
+
+
+def save_build_pack_zip(project_analysis: Dict[str, Any], project_plan: ProjectPlan, output_dir: str = "outputs") -> str:
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+    zip_path = output_path / build_build_pack_zip_filename(project_plan)
+    build_pack = generate_build_pack(project_analysis, project_plan)
+
+    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("START_HERE.md", build_pack["START_HERE.md"])
+        archive.writestr("COPY_THIS_PROMPT.md", build_pack["COPY_THIS_PROMPT.md"])
+
+        for filename in REQUIRED_BUILD_PACK_FILES:
+            archive.writestr(f"generated_project/{filename}", build_pack[filename])
+
+        archive.writestr("generated_project/project_plan.md", _render_markdown(project_plan))
+        archive.writestr(
+            "generated_project/project_plan.json",
+            json.dumps(_model_to_dict(project_plan), indent=2, default=str),
+        )
 
     return str(zip_path)
 
@@ -441,6 +464,13 @@ def build_prompt_pack_zip_filename(plan: ProjectPlan) -> str:
     if not slug:
         return "project-plan.zip"
     return f"{slug}-project-plan.zip"
+
+
+def build_build_pack_zip_filename(plan: ProjectPlan) -> str:
+    slug = slugify_project_name(getattr(plan, "project_name", ""))
+    if not slug:
+        return "coding-agent-job.zip"
+    return f"{slug}-coding-agent-job.zip"
 
 
 def slugify_project_name(value: str) -> str:

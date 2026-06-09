@@ -3,7 +3,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from project_analyzer import analyze_project
+from project_analyzer import analyze_project, infer_build_pack_understanding
 
 
 def test_analyzer_detects_software_project():
@@ -68,3 +68,62 @@ def test_analyzer_flags_unrealistic_scope():
     assert analysis["domain"] == "analytics" or analysis["domain"] == "software"
     assert analysis["complexity"] == "high"
     assert analysis["warnings"]
+
+
+def test_build_pack_understanding_for_single_line_project():
+    analysis = analyze_project("Build a SaaS expense tracker")
+    understanding = analysis["build_pack_understanding"]
+
+    assert analysis["detected_project_type"] == "SaaS application"
+    assert understanding["detected_project_type"] == "SaaS application"
+    assert "workspace users" in understanding["target_users"]
+    assert "authentication" in understanding["core_features"]
+    assert "Workspace" in understanding["likely_data_entities"]
+    assert understanding["frontend_needs"]
+    assert understanding["backend_api_needs"]
+    assert understanding["infrastructure_testing_assumptions"]
+
+
+def test_build_pack_marketplace_detection():
+    understanding = infer_build_pack_understanding("Build a marketplace for used textbooks", "software")
+
+    assert understanding["detected_project_type"] == "marketplace"
+    assert "buyers" in understanding["target_users"]
+    assert "sellers" in understanding["target_users"]
+    assert "Listing" in understanding["likely_data_entities"]
+    assert "transactions" in understanding["core_features"]
+
+
+def test_build_pack_ai_application_detection():
+    understanding = infer_build_pack_understanding("Build an AI study planner", "software")
+
+    assert understanding["detected_project_type"] == "AI application"
+    assert "model integration" in understanding["core_features"]
+    assert "Prompt" in understanding["likely_data_entities"]
+    assert "prompt input" in understanding["frontend_needs"]
+
+
+def test_build_pack_ecommerce_detection():
+    understanding = infer_build_pack_understanding("Create an ecommerce application for handmade products", "software")
+
+    assert understanding["detected_project_type"] == "ecommerce application"
+    assert "products" in understanding["core_features"]
+    assert "cart" in understanding["core_features"]
+    assert "Order" in understanding["likely_data_entities"]
+
+
+def test_build_pack_dashboard_detection():
+    understanding = infer_build_pack_understanding("Build an analytics dashboard for warehouse managers", "analytics")
+
+    assert understanding["detected_project_type"] == "dashboard"
+    assert "metrics" in understanding["core_features"]
+    assert "filters" in understanding["core_features"]
+    assert "chart layout" in understanding["frontend_needs"]
+
+
+def test_build_pack_generic_fallback():
+    understanding = infer_build_pack_understanding("Build a volunteer coordination tool", "software")
+
+    assert understanding["detected_project_type"] == "generic web application"
+    assert "end users" in understanding["target_users"]
+    assert "CRUD workflows" in understanding["core_features"]

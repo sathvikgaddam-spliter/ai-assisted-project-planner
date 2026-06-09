@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from api import app
 from planner import generate_mock_project_plan
-from utils import save_prompt_pack_zip
+from utils import save_build_pack_zip, save_prompt_pack_zip
 
 
 client = TestClient(app)
@@ -27,6 +27,20 @@ def test_api_health_endpoint():
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
+
+
+def test_cors_allows_vite_fallback_localhost_port():
+    response = client.options(
+        "/api/generate-plan",
+        headers={
+            "Origin": "http://localhost:5176",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://localhost:5176"
 
 
 def test_generate_plan_endpoint_returns_project_plan(monkeypatch):
@@ -151,5 +165,54 @@ def test_generate_plan_zip_endpoint_supports_clarification_plan(monkeypatch, tmp
 
 def test_generate_plan_zip_endpoint_validates_description():
     response = client.post("/generate-plan-zip", json={"project_description": ""})
+
+    assert response.status_code == 422
+
+
+def test_generate_build_pack_zip_endpoint_returns_coding_agent_zip(monkeypatch, tmp_path):
+    monkeypatch.setattr("api.generate_project_plan", generate_mock_project_plan)
+    monkeypatch.setattr("api.save_build_pack_zip", lambda analysis, plan: save_build_pack_zip(analysis, plan, str(tmp_path)))
+
+    response = client.post(
+        "/generate-build-pack-zip",
+        json={"project_description": "Build a SaaS expense tracker"},
+    )
+
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/zip"
+    assert response.headers["content-disposition"].startswith("attachment;")
+
+    with zipfile.ZipFile(BytesIO(response.content)) as archive:
+        names = set(archive.namelist())
+
+    assert "START_HERE.md" in names
+    assert "COPY_THIS_PROMPT.md" in names
+    assert "generated_project/project_brief.md" in names
+    assert "generated_project/project_plan.md" in names
+    assert "generated_project/project_plan.json" in names
+
+
+def test_generate_coding_agent_zip_endpoint_returns_coding_agent_zip(monkeypatch, tmp_path):
+    monkeypatch.setattr("api.generate_project_plan", generate_mock_project_plan)
+    monkeypatch.setattr("api.save_build_pack_zip", lambda analysis, plan: save_build_pack_zip(analysis, plan, str(tmp_path)))
+
+    response = client.post(
+        "/generate-coding-agent-zip",
+        json={"project_description": "Build a SaaS expense tracker"},
+    )
+
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/zip"
+
+    with zipfile.ZipFile(BytesIO(response.content)) as archive:
+        names = set(archive.namelist())
+        prompt = archive.read("COPY_THIS_PROMPT.md").decode("utf-8")
+
+    assert "generated_project/coding_agent_prompt.md" in names
+    assert "Your task is to build the application the user requested." in prompt
+
+
+def test_generate_build_pack_zip_endpoint_validates_description():
+    response = client.post("/generate-build-pack-zip", json={"project_description": ""})
 
     assert response.status_code == 422

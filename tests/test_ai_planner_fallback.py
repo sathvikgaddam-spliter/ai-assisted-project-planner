@@ -120,6 +120,8 @@ def test_missing_ai_configuration_falls_back_to_mock_plan():
     assert plan.domain == "software"
     assert any("AI planning failed" in warning for warning in plan.warnings)
     assert any("Reason: AI provider is not configured." in warning for warning in plan.warnings)
+    assert len(plan.engineering_prompts) == 6
+    assert len(plan.prompt_evaluations) == 6
 
 
 def test_invalid_ai_json_falls_back_to_mock_plan():
@@ -155,6 +157,8 @@ def test_valid_ai_json_is_used_when_provider_succeeds():
     assert plan.project_name == "AI Generated Expense Tracker"
     assert plan.status == "plan_generated"
     assert len(plan.phases) == 1
+    assert len(plan.engineering_prompts) == 6
+    assert len(plan.prompt_evaluations) == 6
 
 
 def test_vague_input_does_not_call_ai_provider():
