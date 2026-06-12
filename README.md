@@ -1,5 +1,17 @@
 # AI-Assisted Project Planner
 
+## Important Submission Branch
+
+Please evaluate and run the project from the committed branch:
+
+```bash
+git checkout phase-5-engineering-prompt-pack
+```
+
+The `main` branch is not the final full-stack submission branch. The complete React frontend, FastAPI backend, Prompt Pack ZIP download, Coding Agent Build Pack ZIP download, prompt evaluation, and related tests are on `phase-5-engineering-prompt-pack`.
+
+Do not evaluate the project by running only `python src/main.py`. That command starts the CLI version. For the full project demo, run both the backend and frontend using the instructions below.
+
 AI-Assisted Project Planner is a full-stack AI planning product that turns a natural-language project description into a structured execution plan and engineering handoff package. It combines a React product UI, a FastAPI backend, Gemini-powered planning, deterministic fallback generation, Pydantic validation, role-based engineering prompts, prompt quality evaluation, one-line project understanding, implementation-ready build-pack generation, and an evaluation framework for benchmarking planning quality.
 
 The system is designed for portfolio, classroom, and research demonstration use: users can describe a project, generate a plan, inspect phases/tasks/milestones/risks/dependencies, export results, download Prompt Pack and Build Pack ZIP files, and evaluate planner behavior across realistic benchmark scenarios.
